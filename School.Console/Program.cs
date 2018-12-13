@@ -1,4 +1,5 @@
-﻿using System;
+﻿using School.Data;
+using System;
 
 namespace School.Console
 {
@@ -8,9 +9,10 @@ namespace School.Console
         {
             System.Console.WriteLine("Hello World!");
 
-            var db = new School.Data.SchoolContext();
+            ISchoolData dataService = new School.Data.SchoolServiceRepository(new SchoolContext());
+            var people = dataService.GetAllPersons();
 
-            foreach(var p in db.Person)
+            foreach (var p in people)
             {
                 System.Console.WriteLine($"{p.FirstName} {p.LastName}");
             }

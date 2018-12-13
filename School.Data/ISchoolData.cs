@@ -7,7 +7,7 @@ using School.DTOs;
 
 namespace School.Data
 {
-    interface ISchoolData
+    public interface ISchoolData
     {
         #region Course Methods
 
