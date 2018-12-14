@@ -1,0 +1,18 @@
+USE School
+GO
+
+SELECT TOP 100 * FROM dbo.Department WITH(NOLOCK)
+ORDER BY DepartmentID DESC
+
+SELECT TOP 100 * FROM dbo.Person WITH(NOLOCK)
+WHERE PersonID = 415
+ORDER BY PersonID DESC
+
+SELECT TOP 100 * FROM dbo.Course WITH(NOLOCK)
+--SELECT TOP 100 * FROM dbo.CourseInstructor WITH(NOLOCK)
+SELECT TOP 100 * FROM dbo.OfficeAssignment WITH(NOLOCK)WHERE PersonID = 415
+--SELECT TOP 100 * FROM dbo.OnlineCourse WITH(NOLOCK)
+--SELECT TOP 100 * FROM dbo.OnsiteCourse WITH(NOLOCK)
+--SELECT TOP 100 * FROM dbo.StudentGrade WITH(NOLOCK)
+
+--DELETE FROM dbo.Department WHERE DepartmentID > 7

@@ -153,6 +153,7 @@ namespace School.Data
             if(target != null && target.PersonId == personID)
             {
                 Database.StudentGrade.RemoveRange(Database.StudentGrade.Where(x => x.StudentId == personID).ToList());
+                Database.OfficeAssignment.RemoveRange(Database.OfficeAssignment.Where(x => x.InstructorId == personID).ToList());
                 Database.Person.Remove(target);                
                 return Database.SaveChanges();
             }

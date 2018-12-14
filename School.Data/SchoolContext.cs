@@ -28,7 +28,7 @@ namespace School.Data
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(System.Configuration.ConfigurationManager.ConnectionStrings["StudentDB"].ConnectionString);
+                optionsBuilder.UseSqlServer(System.Configuration.ConfigurationManager.ConnectionStrings["SchoolDB"].ConnectionString);
             }
         }
 
