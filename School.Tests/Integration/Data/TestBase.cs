@@ -19,7 +19,7 @@ namespace School.Tests.Integration.Data
 
         //TODO: update this to an App.config file or similar. Right now .NET core does not support App.config files in mstest.
         //https://github.com/Microsoft/vstest/issues/1758
-        const string TEST_CONNECTION_STRING = @"Data Source=JCoddaire\JCoddaire;Initial Catalog=School;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework";
+        const string TEST_CONNECTION_STRING = @"Data Source=GAMINGPC\MSSQLSERVER01;Initial Catalog=School;Integrated Security=True;MultipleActiveResultSets=True;App=EntityFramework";
 
         internal ISchoolData Repository
         {
