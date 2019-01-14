@@ -34,6 +34,8 @@ namespace School.API
                     options.UseSqlServer(Configuration.GetConnectionString("SchoolDB")));
 
             services.AddScoped<ISchoolData, SchoolServiceRepository>();
+            
+            services.AddCors();//Allow cross-origin requests
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -69,7 +71,15 @@ namespace School.API
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "School Service V1");
             });
-                       
+
+            //TODO: figure out why this code does not work.
+            //app.UseCors(
+            //    options => options.WithOrigins("https://localhost:4200")
+            //);
+
+            app.UseCors(builder => builder
+                        .AllowAnyOrigin());
+
             app.UseMvc();
         }
     }
