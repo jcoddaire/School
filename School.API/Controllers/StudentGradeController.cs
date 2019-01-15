@@ -11,38 +11,38 @@ namespace School.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PeopleController : ControllerBase
+    public class StudentGradeController : ControllerBase
     {
-        public PeopleController(ISchoolData repository)
+        public StudentGradeController(ISchoolData repository)
         {
             Repository = repository;
         }
 
         /// <summary>
-        /// Gets all people in the system.
+        /// Gets all grades in the system.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<PersonDTO> Get()
+        public IEnumerable<StudentGradeDTO> Get()
         {
-            return Repository.GetAllPersons();
+            return Repository.GetAllStudentGrades();
         }
 
         /// <summary>
-        /// Gets a given person.
+        /// Gets all grades for a given student.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<PersonDTO> Get(int id)
+        public ActionResult<StudentGradeDTO> Get(int id)
         {
             if (id <= 0)
             {
                 return NotFound();
             }
 
-            var target = Repository.GetPerson(id);
-            if (target != null && target.PersonID > 0)
+            var target = Repository.GetStudentGrade(id);
+            if (target != null && target.EnrollmentID > 0)
             {
                 return target;
             }
@@ -52,77 +52,63 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Creates a new person.
+        /// Creates a new student grade.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="studentGrade">The student grade.</param>
         /// <returns></returns>
         /// <exception cref="HttpResponseException"></exception>
         [HttpPost]
-        public ActionResult<PersonDTO> Post(PersonDTO person)
+        public ActionResult<StudentGradeDTO> Post(StudentGradeDTO studentGrade)
         {
-            if (person == null)
+            if (studentGrade == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            //check data.
-            //Not everyone has a name. Null / empty string is all valid. SO a totally empty PersonDTO object is valid.
-            //See this, point 40. http://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+            studentGrade = Repository.AddStudentGrade(studentGrade);
 
-            person = Repository.CreatePerson(person);
-
-            return person;
+            return studentGrade;
         }
 
         /// <summary>
-        /// Updates the specified person.
+        /// Updates the specified student grade.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="studentGrade">The student grade.</param>
         /// <returns></returns>
         /// <exception cref="HttpResponseException">
         /// </exception>
         [HttpPut]
-        public ActionResult<PersonDTO> Put(PersonDTO person)
+        public ActionResult<StudentGradeDTO> Put(StudentGradeDTO studentGrade)
         {
-            if (person == null)
+            if (studentGrade == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            if (person.PersonID <= 0)
+            if (studentGrade.EnrollmentID <= 0)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetPerson(person.PersonID);
-            if (foundPerson == null)
+            var target = Repository.GetStudentGrade(studentGrade.EnrollmentID);
+            if (target == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
+            
+            studentGrade = Repository.UpdateStudentGrade(studentGrade);
 
-            if (foundPerson.FirstName.Equals(person.FirstName)
-                && foundPerson.LastName.Equals(person.LastName)
-                && foundPerson.HireDate.Equals(person.HireDate)
-                && foundPerson.EnrollmentDate.Equals(person.EnrollmentDate))
-            {
-                //There are no changes to the object.
-                //return 204 no change.
-                return person;
-            }
-
-            person = Repository.UpdatePerson(person);
-
-            return person;
+            return studentGrade;
         }
 
         /// <summary>
-        /// Deletes the specified person.
+        /// Deletes the specified student grade.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The enrollment id.</param>
         /// <returns></returns>
         /// <exception cref="HttpResponseException">
         /// </exception>
@@ -135,14 +121,14 @@ namespace School.API.Controllers
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetPerson(id);
-            if (foundPerson == null)
+            var target = Repository.GetStudentGrade(id);
+            if (target == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var result = Repository.DeletePerson(id);
+            var result = Repository.DeleteStudentGrade(id);
             if (result > 0)
             {
                 //return 204 no content.

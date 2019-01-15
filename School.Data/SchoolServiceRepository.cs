@@ -285,6 +285,23 @@ namespace School.Data
                     
                 }).ToList();
 
+            foreach(var c in courses)
+            {
+                var department = Database.Department.Where(x => x.DepartmentId == c.DepartmentID).FirstOrDefault();
+                if(department != null)
+                {
+                    c.Department = new DepartmentDTO
+                    {
+                        DepartmentID = department.DepartmentId,
+                        Name = department.Name,
+                        Budget = department.Budget,
+                        StartDate = department.StartDate,
+                        Administrator = department.Administrator
+
+                    };
+                }
+            }
+
             return courses;
         }
 
@@ -312,6 +329,21 @@ namespace School.Data
 
             if (target != null && target.CourseID > 0)
             {
+
+                var department = Database.Department.Where(x => x.DepartmentId == target.DepartmentID).FirstOrDefault();
+                if(department != null)
+                {
+                    target.Department = new DepartmentDTO
+                    {
+                        DepartmentID = department.DepartmentId,
+                        Name = department.Name,
+                        Budget = department.Budget,
+                        StartDate = department.StartDate,
+                        Administrator = department.Administrator
+
+                    };
+                }
+
                 return target;
             }
 

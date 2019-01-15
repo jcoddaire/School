@@ -11,38 +11,38 @@ namespace School.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PeopleController : ControllerBase
+    public class DepartmentController : ControllerBase
     {
-        public PeopleController(ISchoolData repository)
+        public DepartmentController(ISchoolData repository)
         {
             Repository = repository;
         }
 
         /// <summary>
-        /// Gets all people in the system.
+        /// Gets all departments in the system.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<PersonDTO> Get()
+        public IEnumerable<DepartmentDTO> Get()
         {
-            return Repository.GetAllPersons();
+            return Repository.GetAllDepartments();
         }
 
         /// <summary>
-        /// Gets a given person.
+        /// Gets a given Department.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<PersonDTO> Get(int id)
+        public ActionResult<DepartmentDTO> Get(int id)
         {
             if (id <= 0)
             {
                 return NotFound();
             }
 
-            var target = Repository.GetPerson(id);
-            if (target != null && target.PersonID > 0)
+            var target = Repository.GetDepartment(id);
+            if (target != null && target.DepartmentID > 0)
             {
                 return target;
             }
@@ -52,75 +52,61 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Creates a new person.
+        /// Creates a new department.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="department">The department.</param>
         /// <returns></returns>
         /// <exception cref="HttpResponseException"></exception>
         [HttpPost]
-        public ActionResult<PersonDTO> Post(PersonDTO person)
+        public ActionResult<DepartmentDTO> Post(DepartmentDTO department)
         {
-            if (person == null)
+            if (department == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            //check data.
-            //Not everyone has a name. Null / empty string is all valid. SO a totally empty PersonDTO object is valid.
-            //See this, point 40. http://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+            department = Repository.CreateDepartment(department);
 
-            person = Repository.CreatePerson(person);
-
-            return person;
+            return department;
         }
 
         /// <summary>
-        /// Updates the specified person.
+        /// Updates the specified department.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="department">The department.</param>
         /// <returns></returns>
         /// <exception cref="HttpResponseException">
         /// </exception>
         [HttpPut]
-        public ActionResult<PersonDTO> Put(PersonDTO person)
+        public ActionResult<DepartmentDTO> Put(DepartmentDTO department)
         {
-            if (person == null)
+            if (department == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            if (person.PersonID <= 0)
+            if (department.DepartmentID <= 0)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetPerson(person.PersonID);
-            if (foundPerson == null)
+            var target = Repository.GetDepartment(department.DepartmentID);
+            if (target == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
+            
+            department = Repository.UpdateDepartment(department);
 
-            if (foundPerson.FirstName.Equals(person.FirstName)
-                && foundPerson.LastName.Equals(person.LastName)
-                && foundPerson.HireDate.Equals(person.HireDate)
-                && foundPerson.EnrollmentDate.Equals(person.EnrollmentDate))
-            {
-                //There are no changes to the object.
-                //return 204 no change.
-                return person;
-            }
-
-            person = Repository.UpdatePerson(person);
-
-            return person;
+            return department;
         }
 
         /// <summary>
-        /// Deletes the specified person.
+        /// Deletes the specified department.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
@@ -135,14 +121,14 @@ namespace School.API.Controllers
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetPerson(id);
-            if (foundPerson == null)
+            var target = Repository.GetDepartment(id);
+            if (target == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var result = Repository.DeletePerson(id);
+            var result = Repository.DeleteDepartment(id);
             if (result > 0)
             {
                 //return 204 no content.
