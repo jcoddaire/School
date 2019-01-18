@@ -121,7 +121,7 @@ BEGIN
 CREATE TABLE [dbo].[StudentCourses](
 	[StudentID] [int] NOT NULL,
 	[CourseID] [int] NOT NULL,
-	[Grade] decimal(2,2) NOT NULL,
+	[Grade] decimal(18,2) NOT NULL,
 	[EnrolledYear] [int] NOT NULL,
 	[EnrolledSemester] NVARCHAR(10) NOT NULL,
 	[Completed] [bit] NOT NULL,	
@@ -203,5 +203,79 @@ GO
 
 --TODO: generate test data.
 
+DELETE FROM dbo.StudentCourses;
+DELETE FROM dbo.CourseInstructors;
+DELETE FROM dbo.Courses;
+DELETE FROM dbo.Students;
+DELETE FROM dbo.Instructors;
+DELETE FROM dbo.Departments;
+
+
+INSERT INTO [dbo].[Departments] ([DepartmentID] ,[Name] ,[Budget] ,[CreatedDate]) VALUES (1001, 'Business', 1500000, '1950-01-01');
+INSERT INTO [dbo].[Departments] ([DepartmentID] ,[Name] ,[Budget] ,[CreatedDate]) VALUES (1002, 'Engineering', 3000000, '1972-01-01');
+INSERT INTO [dbo].[Departments] ([DepartmentID] ,[Name] ,[Budget] ,[CreatedDate]) VALUES (1003, 'Human Sciences', 4200000, '1950-01-01');
+INSERT INTO [dbo].[Departments] ([DepartmentID] ,[Name] ,[Budget] ,[CreatedDate]) VALUES (1004, 'Design', 150000, '1988-01-01');
+INSERT INTO [dbo].[Departments] ([DepartmentID] ,[Name] ,[Budget] ,[CreatedDate]) VALUES (1005, 'Medicine', 5000000, '1949-01-01');
+
+INSERT INTO [dbo].[Instructors] ([FirstName],[LastName] ,[HireDate] ,[Terminated]) VALUES ('James', 'Daunting', '2004-08-14', 0);
+INSERT INTO [dbo].[Instructors] ([FirstName],[LastName] ,[HireDate] ,[Terminated]) VALUES ('Amanda', 'Charbonneau', '1963-06-27', 1);
+INSERT INTO [dbo].[Instructors] ([FirstName],[LastName] ,[HireDate] ,[Terminated]) VALUES ('Lewis', 'Bell', '1996-12-28', 0);
+INSERT INTO [dbo].[Instructors] ([FirstName],[LastName] ,[HireDate] ,[Terminated]) VALUES ('Barbara', 'Rasmussen', '2019-01-02', 0);
+INSERT INTO [dbo].[Instructors] ([FirstName],[LastName] ,[HireDate] ,[Terminated]) VALUES ('Laurel', 'Harris', '2015-06-27', 0);
+
+INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Jane', 'Rapp', '2018-01-06');
+INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Donald', 'Reed', '2018-01-06');
+INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Anton', 'Walsh', '2018-01-06');
+INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Angel', 'Breazeale', '2018-01-06');
+INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Raymundo', 'Criner', '2017-01-06');
+INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Roseann', 'Scott', '2017-01-06');
+
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5001, 'Intro to Math', 3, 1002);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5002, 'Intro to Chem', 3, 1005);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5003, 'Intro to Bio', 3, 1005);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5004, 'Advanced Engineering', 3, 1002);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5005, 'Historical Singers', 2, 1004);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5006, 'Intro to Planking', 1, 1002);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5007, 'Advanced Diagnosises', 5, 1005);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5008, 'Macroeconomics', 3, 1001);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5009, 'Accounting 302', 3, 1001);
+INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5010, 'Advanced Sciences', 4, 1003);
+
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5001, 1);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5006, 1);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5002, 2);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5003, 2);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5007, 2);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5010, 3);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5007, 4);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5005, 4);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5008, 5);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5009, 5);
+INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5005, 5);
+
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (1 ,5001 ,3.5 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (1 ,5002 ,2.9 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (1 ,5003 ,3.2 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (1 ,5006 ,4.0 ,2019 , 'Winter',0, 0, NULL);
+
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (2 ,5010 ,3.5 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (2 ,5008 ,2.9 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (2 ,5009 ,3.2 ,2018 , 'Fall',1, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (2 ,5002 ,3.95 ,2018 , 'Fall',1, 0, NULL);
+
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (3 ,5001 ,3.5 ,2019 , 'Fall',0, 1, '2018-08-24');
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (3 ,5002 ,2.9 ,2019 , 'Fall',0, 1, '2018-08-24');
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (3 ,5001 ,3.2 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (3 ,5002 ,4.0 ,2019 , 'Winter',0, 0, NULL);
+
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (4 ,5001 ,2.0 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (4 ,5002 ,2.1 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (4 ,5003 ,2.5 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (4 ,5005 ,4.0 ,2019 , 'Winter',0, 0, NULL);
+
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (5 ,5010 ,3.5 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (5 ,5007 ,2.9 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (5 ,5004 ,3.2 ,2019 , 'Winter',0, 0, NULL);
+INSERT INTO [dbo].[StudentCourses] ([StudentID] ,[CourseID] ,[Grade] ,[EnrolledYear] ,[EnrolledSemester] ,[Completed] ,[Dropped] ,[DroppedTime]) VALUES (5 ,5001 ,4.0 ,2018 , 'Fall',1, 0, NULL);
 
 GO
