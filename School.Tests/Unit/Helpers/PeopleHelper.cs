@@ -12,19 +12,19 @@ namespace School.Tests.Unit.Helpers
     [ExcludeFromCodeCoverage]
     public static class PeopleHelper
     {
-        public static List<Person> GetPeopleList()
-        {
-
-            var people = new List<Person>
-            {
-                new Person { FirstName = "Amber", LastName = "Baar", PersonId = 3 },
-                new Person { FirstName = "Ben", LastName = "Xavier", PersonId = 1 },
-                new Person { FirstName = "Ronald", LastName = "Weasley", PersonId = 5 }
-
-            };
-
-            return people;
-        }
+        //public static List<Person> GetPeopleList()
+        //{
+        //
+        //    var people = new List<Person>
+        //    {
+        //        new Person { FirstName = "Amber", LastName = "Baar", PersonId = 3 },
+        //        new Person { FirstName = "Ben", LastName = "Xavier", PersonId = 1 },
+        //        new Person { FirstName = "Ronald", LastName = "Weasley", PersonId = 5 }
+        //
+        //    };
+        //
+        //    return people;
+        //}
 
         public static List<PersonDTO> GetPeopleListDTO()
         {

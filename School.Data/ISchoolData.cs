@@ -48,7 +48,32 @@ namespace School.Data
         #endregion
 
         #region Course Instructor Methods
+        /// <summary>
+        /// Gets all course instructors.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<CourseInstructorDTO> GetAllCourseInstructors();
 
+        /// <summary>
+        /// Creates the course instructor.
+        /// </summary>
+        /// <param name="course">The course.</param>
+        /// <returns></returns>
+        CourseInstructorDTO CreateCourseInstructor(CourseInstructorDTO course);
+
+        /// <summary>
+        /// Updates the course instructor.
+        /// </summary>
+        /// <param name="course">The course.</param>
+        /// <returns></returns>
+        CourseInstructorDTO UpdateCourseInstructor(CourseInstructorDTO course);
+
+        /// <summary>
+        /// Deletes the course instructor.
+        /// </summary>
+        /// <param name="courseID">The course identifier.</param>
+        /// <returns></returns>
+        int DeleteCourseInstructor(CourseInstructorDTO course);
 
         #endregion
 
@@ -90,199 +115,127 @@ namespace School.Data
 
         #endregion
 
-        #region Office Assignment Methods
-
+        #region Instructor Methods
         /// <summary>
-        /// Gets all office assignments.
+        /// Gets all instructors.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<OfficeAssignmentDTO> GetAllOfficeAssignments();
+        IEnumerable<InstructorDTO> GetAllInstructors();
 
         /// <summary>
-        /// Gets the office assignment.
+        /// Gets the instructor.
         /// </summary>
-        /// <param name="instructorID">The person identifier.</param>
-        /// <returns></returns>
-        OfficeAssignmentDTO GetOfficeAssignment(int instructorID);
-
-        /// <summary>
-        /// Creates the office assignment.
-        /// If the InstructorID is already assigned to another office, this method
-        /// will delete the instructor's prior assignment, then assign the new location.
-        /// </summary>
-        /// <param name="assignment">The assignment.</param>
-        /// <returns></returns>
-        OfficeAssignmentDTO CreateOfficeAssignment(OfficeAssignmentDTO assignment);
-
-        /// <summary>
-        /// Updates the office assignment.
-        /// </summary>
-        /// <param name="assignment">The assignment.</param>
-        /// <returns></returns>
-        OfficeAssignmentDTO UpdateOfficeAssignment(OfficeAssignmentDTO assignment);
-
-        /// <summary>
-        /// Deletes the office assignment.
-        /// </summary>
-        /// <param name="personID">The person identifier.</param>
-        /// <returns></returns>
-        int DeleteOfficeAssignment(int personID);
-
-        #endregion
-
-        #region Online Course Methods
-
-        /// <summary>
-        /// Gets all online courses.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<OnlineCourseDTO> GetAllOnlineCourses();
-
-        /// <summary>
-        /// Gets the online course.
-        /// </summary>
-        /// <param name="courseID">The course identifier.</param>
-        /// <returns></returns>
-        OnlineCourseDTO GetOnlineCourse(int courseID);
-
-        /// <summary>
-        /// Adds the online course.
-        /// </summary>
-        /// <param name="course">The course.</param>
-        /// <returns></returns>
-        OnlineCourseDTO AddOnlineCourse(OnlineCourseDTO course);
-
-        /// <summary>
-        /// Updates the online course.
-        /// </summary>
-        /// <param name="course">The course.</param>
-        /// <returns></returns>
-        OnlineCourseDTO UpdateOnlineCourse(OnlineCourseDTO course);
-
-        /// <summary>
-        /// Deletes the online course.
-        /// </summary>
-        /// <param name="courseID">The course identifier.</param>
-        /// <returns></returns>
-        int DeleteOnlineCourse(int courseID);
-
-        #endregion
-
-        #region Onsite Course Methods
-
-        /// <summary>
-        /// Gets all onsite courses.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<OnsiteCourseDTO> GetAllOnsiteCourses();
-
-        /// <summary>
-        /// Gets the onsite course.
-        /// </summary>
-        /// <param name="courseID">The course identifier.</param>
-        /// <returns></returns>
-        OnsiteCourseDTO GetOnsiteCourse(int courseID);
-
-        /// <summary>
-        /// Adds the onsite course.
-        /// </summary>
-        /// <param name="course">The course.</param>
-        /// <returns></returns>
-        OnsiteCourseDTO AddOnsiteCourse(OnsiteCourseDTO course);
-
-        /// <summary>
-        /// Updates the onsite course.
-        /// </summary>
-        /// <param name="course">The course.</param>
-        /// <returns></returns>
-        OnsiteCourseDTO UpdateOnsiteCourse(OnsiteCourseDTO course);
-
-        /// <summary>
-        /// Deletes the onsite course.
-        /// </summary>
-        /// <param name="courseID">The course identifier.</param>
-        /// <returns></returns>
-        int DeleteOnsiteCourse(int courseID);
-
-        #endregion
-
-        #region Person Methods
-        /// <summary>
-        /// Gets all people.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<PersonDTO> GetAllPersons();
-
-        /// <summary>
-        /// Gets the person.
-        /// </summary>
-        /// <param name="personID">The person identifier.</param>
+        /// <param name="instructorID">The instructor identifier.</param>
         /// <returns>
-        /// A person DTO object. If no person was found, returns null.
+        /// A Instructor DTO object. If no instructor was found, returns null.
         /// </returns>
-        PersonDTO GetPerson(int personID);
+        InstructorDTO GetInstructor(int instructorID);
 
         /// <summary>
-        /// Creates the person.
+        /// Creates the instructor.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="instructor">The instructor.</param>
         /// <returns></returns>
-        PersonDTO CreatePerson(PersonDTO person);
+        InstructorDTO CreateInstructor(InstructorDTO instructor);
 
         /// <summary>
-        /// Updates the person.
+        /// Updates the instructor.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="instructor">The instructor.</param>
         /// <returns></returns>
-        PersonDTO UpdatePerson(PersonDTO person);
+        InstructorDTO UpdateInstructor(InstructorDTO instructor);
 
         /// <summary>
-        /// Deletes the person.
+        /// Deletes the instructor.
         /// </summary>
-        /// <param name="personID">The person identifier.</param>
+        /// <param name="instructorID">The instructor identifier.</param>
         /// <returns>
         /// The number of rows affected.
         /// If something failed, returns -1.
         /// </returns>
-        int DeletePerson(int personID);
+        int DeleteInstructor(int instructorID);
         #endregion
 
-        #region Student Grade Methods
-
+        #region Student Methods
         /// <summary>
-        /// Gets the student grade.
-        /// </summary>
-        /// <param name="enrollmentID">The enrollment identifier.</param>
-        /// <returns></returns>
-        StudentGradeDTO GetStudentGrade(int enrollmentID);
-
-        /// <summary>
-        /// Gets all student grades.
+        /// Gets all Students.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<StudentGradeDTO> GetAllStudentGrades();
+        IEnumerable<StudentDTO> GetAllStudents();
 
         /// <summary>
-        /// Adds the student grade.
+        /// Gets the Student.
         /// </summary>
-        /// <param name="grade">The grade.</param>
-        /// <returns></returns>
-        StudentGradeDTO AddStudentGrade(StudentGradeDTO grade);
+        /// <param name="StudentID">The Student identifier.</param>
+        /// <returns>
+        /// A Student DTO object. If no Student was found, returns null.
+        /// </returns>
+        StudentDTO GetStudent(int StudentID);
 
         /// <summary>
-        /// Updates the student grade.
+        /// Creates the Student.
         /// </summary>
-        /// <param name="grade">The grade.</param>
+        /// <param name="Student">The Student.</param>
         /// <returns></returns>
-        StudentGradeDTO UpdateStudentGrade(StudentGradeDTO grade);
+        StudentDTO CreateStudent(StudentDTO Student);
 
         /// <summary>
-        /// Deletes the student grade.
+        /// Updates the Student.
         /// </summary>
-        /// <param name="enrollmentID">The enrollment identifier.</param>
+        /// <param name="student">The student.</param>
         /// <returns></returns>
-        int DeleteStudentGrade(int enrollmentID);
+        StudentDTO UpdateStudent(StudentDTO student);
 
+        /// <summary>
+        /// Deletes the Student.
+        /// </summary>
+        /// <param name="studentID">The Student identifier.</param>
+        /// <returns>
+        /// The number of rows affected.
+        /// If something failed, returns -1.
+        /// </returns>
+        int DeleteStudent(int StudentID);
+        #endregion
+
+        #region StudentCourses Methods
+        /// <summary>
+        /// Gets all StudentCourses.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<StudentCourseDTO> GetAllStudentCourses();
+
+        /// <summary>
+        /// Gets the StudentCourse.
+        /// </summary>
+        /// <param name="StudentCourseID">The StudentCourse identifier.</param>
+        /// <returns>
+        /// A StudentCourse DTO object. If no StudentCourse was found, returns null.
+        /// </returns>
+        StudentCourseDTO GetStudentCourse(int StudentCourseID);
+
+        /// <summary>
+        /// Creates the StudentCourse.
+        /// </summary>
+        /// <param name="StudentCourse">The StudentCourse.</param>
+        /// <returns></returns>
+        StudentCourseDTO CreateStudentCourse(StudentCourseDTO StudentCourse);
+
+        /// <summary>
+        /// Updates the StudentCourse.
+        /// </summary>
+        /// <param name="StudentCourse">The StudentCourse.</param>
+        /// <returns></returns>
+        StudentCourseDTO UpdateStudentCourse(StudentCourseDTO StudentCourse);
+
+        /// <summary>
+        /// Deletes the StudentCourse.
+        /// </summary>
+        /// <param name="StudentCourseID">The StudentCourse identifier.</param>
+        /// <returns>
+        /// The number of rows affected.
+        /// If something failed, returns -1.
+        /// </returns>
+        int DeleteStudentCourse(int StudentCourseID);
         #endregion
     }
 }

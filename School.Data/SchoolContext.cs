@@ -15,14 +15,12 @@ namespace School.Data
         {
         }
 
-        public virtual DbSet<Course> Course { get; set; }
-        public virtual DbSet<CourseInstructor> CourseInstructor { get; set; }
-        public virtual DbSet<Department> Department { get; set; }
-        public virtual DbSet<OfficeAssignment> OfficeAssignment { get; set; }
-        public virtual DbSet<OnlineCourse> OnlineCourse { get; set; }
-        public virtual DbSet<OnsiteCourse> OnsiteCourse { get; set; }
-        public virtual DbSet<Person> Person { get; set; }
-        public virtual DbSet<StudentGrade> StudentGrade { get; set; }
+        public virtual DbSet<CourseInstructors> CourseInstructors { get; set; }
+        public virtual DbSet<Courses> Courses { get; set; }
+        public virtual DbSet<Departments> Departments { get; set; }
+        public virtual DbSet<Instructors> Instructors { get; set; }
+        public virtual DbSet<StudentCourses> StudentCourses { get; set; }
+        public virtual DbSet<Students> Students { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -32,138 +30,79 @@ namespace School.Data
             }
         }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.0-rtm-35687");
+            modelBuilder.HasAnnotation("ProductVersion", "2.2.1-servicing-10028");
 
-            modelBuilder.Entity<Course>(entity =>
+            modelBuilder.Entity<CourseInstructors>(entity =>
             {
+                entity.HasKey(e => new { e.CourseId, e.InstructorId })
+                    .HasName("PK_CourseInstructor");
+
+                entity.Property(e => e.CourseId).HasColumnName("CourseID");
+
+                entity.Property(e => e.InstructorId).HasColumnName("InstructorID");
+
+                entity.HasOne(d => d.Course)
+                    .WithMany(p => p.CourseInstructors)
+                    .HasForeignKey(d => d.CourseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Courses_CourseInstructors");
+
+                entity.HasOne(d => d.Instructor)
+                    .WithMany(p => p.CourseInstructors)
+                    .HasForeignKey(d => d.InstructorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Instructors_CourseInstructors");
+            });
+
+            modelBuilder.Entity<Courses>(entity =>
+            {
+                entity.HasKey(e => e.CourseId)
+                    .HasName("PK_School.Course");
+
                 entity.Property(e => e.CourseId)
                     .HasColumnName("CourseID")
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.DepartmentId).HasColumnName("DepartmentID");
 
-                entity.Property(e => e.Title)
+                entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
 
                 entity.HasOne(d => d.Department)
-                    .WithMany(p => p.Course)
+                    .WithMany(p => p.Courses)
                     .HasForeignKey(d => d.DepartmentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Course_Department");
+                    .HasConstraintName("FK_Courses_Departments");
             });
 
-            modelBuilder.Entity<CourseInstructor>(entity =>
+            modelBuilder.Entity<Departments>(entity =>
             {
-                entity.HasKey(e => new { e.CourseId, e.PersonId });
+                entity.HasKey(e => e.DepartmentId)
+                    .HasName("PK_Department");
 
-                entity.Property(e => e.CourseId).HasColumnName("CourseID");
-
-                entity.Property(e => e.PersonId).HasColumnName("PersonID");
-
-                entity.HasOne(d => d.Course)
-                    .WithMany(p => p.CourseInstructor)
-                    .HasForeignKey(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CourseInstructor_Course");
-
-                entity.HasOne(d => d.Person)
-                    .WithMany(p => p.CourseInstructor)
-                    .HasForeignKey(d => d.PersonId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CourseInstructor_Person");
-            });
-
-            modelBuilder.Entity<Department>(entity =>
-            {
                 entity.Property(e => e.DepartmentId)
                     .HasColumnName("DepartmentID")
                     .ValueGeneratedNever();
 
                 entity.Property(e => e.Budget).HasColumnType("money");
 
+                entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
-
-                entity.Property(e => e.StartDate).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<OfficeAssignment>(entity =>
+            modelBuilder.Entity<Instructors>(entity =>
             {
-                entity.HasKey(e => e.InstructorId);
+                entity.HasKey(e => e.InstructorId)
+                    .HasName("PK_School.Instructors");
 
-                entity.Property(e => e.InstructorId)
-                    .HasColumnName("InstructorID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Location)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Timestamp)
-                    .IsRequired()
-                    .IsRowVersion();
-
-                entity.HasOne(d => d.Instructor)
-                    .WithOne(p => p.OfficeAssignment)
-                    .HasForeignKey<OfficeAssignment>(d => d.InstructorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OfficeAssignment_Person");
-            });
-
-            modelBuilder.Entity<OnlineCourse>(entity =>
-            {
-                entity.HasKey(e => e.CourseId);
-
-                entity.Property(e => e.CourseId)
-                    .HasColumnName("CourseID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Url)
-                    .IsRequired()
-                    .HasColumnName("URL")
-                    .HasMaxLength(100);
-
-                entity.HasOne(d => d.Course)
-                    .WithOne(p => p.OnlineCourse)
-                    .HasForeignKey<OnlineCourse>(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OnlineCourse_Course");
-            });
-
-            modelBuilder.Entity<OnsiteCourse>(entity =>
-            {
-                entity.HasKey(e => e.CourseId);
-
-                entity.Property(e => e.CourseId)
-                    .HasColumnName("CourseID")
-                    .ValueGeneratedNever();
-
-                entity.Property(e => e.Days)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Location)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Time).HasColumnType("smalldatetime");
-
-                entity.HasOne(d => d.Course)
-                    .WithOne(p => p.OnsiteCourse)
-                    .HasForeignKey<OnsiteCourse>(d => d.CourseId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_OnsiteCourse_Course");
-            });
-
-            modelBuilder.Entity<Person>(entity =>
-            {
-                entity.Property(e => e.PersonId).HasColumnName("PersonID");
-
-                entity.Property(e => e.EnrollmentDate).HasColumnType("datetime");
+                entity.Property(e => e.InstructorId).HasColumnName("InstructorID");
 
                 entity.Property(e => e.FirstName)
                     .IsRequired()
@@ -176,29 +115,50 @@ namespace School.Data
                     .HasMaxLength(50);
             });
 
-            modelBuilder.Entity<StudentGrade>(entity =>
+            modelBuilder.Entity<StudentCourses>(entity =>
             {
-                entity.HasKey(e => e.EnrollmentId);
-
-                entity.Property(e => e.EnrollmentId).HasColumnName("EnrollmentID");
-
-                entity.Property(e => e.CourseId).HasColumnName("CourseID");
-
-                entity.Property(e => e.Grade).HasColumnType("decimal(3, 2)");
+                entity.HasKey(e => new { e.StudentId, e.CourseId, e.EnrolledYear, e.EnrolledSemester })
+                    .HasName("PK_School.StudentCourses");
 
                 entity.Property(e => e.StudentId).HasColumnName("StudentID");
 
+                entity.Property(e => e.CourseId).HasColumnName("CourseID");
+
+                entity.Property(e => e.EnrolledSemester).HasMaxLength(10);
+
+                entity.Property(e => e.DroppedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Grade).HasColumnType("decimal(18, 2)");
+
                 entity.HasOne(d => d.Course)
-                    .WithMany(p => p.StudentGrade)
+                    .WithMany(p => p.StudentCourses)
                     .HasForeignKey(d => d.CourseId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_StudentGrade_Course");
+                    .HasConstraintName("FK_Courses_StudentCourses");
 
                 entity.HasOne(d => d.Student)
-                    .WithMany(p => p.StudentGrade)
+                    .WithMany(p => p.StudentCourses)
                     .HasForeignKey(d => d.StudentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_StudentGrade_Student");
+                    .HasConstraintName("FK_Students_StudentCourses");
+            });
+
+            modelBuilder.Entity<Students>(entity =>
+            {
+                entity.HasKey(e => e.StudentId)
+                    .HasName("PK_School.Students");
+
+                entity.Property(e => e.StudentId).HasColumnName("StudentID");
+
+                entity.Property(e => e.EnrollmentDate).HasColumnType("datetime");
+
+                entity.Property(e => e.FirstName)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastName)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
         }
     }
