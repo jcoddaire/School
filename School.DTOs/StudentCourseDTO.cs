@@ -12,6 +12,6 @@ namespace School.DTOs
         public string EnrolledSemester { get; set; }
         public bool Completed { get; set; }
         public bool Dropped { get; set; }
-        public DateTime DroppedTime { get; set; }
+        public DateTime? DroppedTime { get; set; }
     }
 }

@@ -28,12 +28,11 @@ namespace School.Tests.Integration.Data
 
             Assert.IsNotNull(obj.DepartmentID);
             Assert.IsNotNull(obj.Name);
-            Assert.IsNotNull(obj.StartDate);
             Assert.IsNotNull(obj.Budget);
-            Assert.IsNull(obj.Administrator);
+            Assert.IsNotNull(obj.CreatedDate);
 
             Assert.IsTrue(obj.DepartmentID > 0);
-            Assert.AreEqual(DateTime.Today, obj.StartDate);
+            Assert.AreEqual(DateTime.Today, obj.CreatedDate);
             Assert.AreEqual(1000000, obj.Budget);
 
             DepartmentTest.DeleteTestObject(obj, Repository);
@@ -122,7 +121,7 @@ namespace School.Tests.Integration.Data
             {
                 var differentDate = new DateTime(1999, 12, 31);
 
-                obj.StartDate = differentDate;
+                obj.CreatedDate = differentDate;
 
                 obj = Repository.UpdateDepartment(obj);
 
@@ -130,7 +129,7 @@ namespace School.Tests.Integration.Data
                 var updated = Repository.GetDepartment(obj.DepartmentID);
 
                 Assert.IsNotNull(updated);
-                Assert.AreEqual(differentDate, updated.StartDate);
+                Assert.AreEqual(differentDate, updated.CreatedDate);
             }
             catch (Exception)
             {
@@ -144,38 +143,6 @@ namespace School.Tests.Integration.Data
             }
         }
         
-        [TestMethod]
-        public void UpdateDepartment_Test_Administrator()
-        {
-            var obj = CreateTestDepartment(Repository);
-                                    
-            var person = PersonTest.CreateTestPerson(Repository);
-
-            try
-            {
-                obj.Administrator = person.PersonID;
-
-                obj = Repository.UpdateDepartment(obj);
-
-                //confirm the object was updated.
-                var updated = Repository.GetDepartment(obj.DepartmentID);
-
-                Assert.IsNotNull(updated);
-                Assert.AreEqual(person.PersonID, updated.Administrator);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            finally
-            {
-                //Remove the test data.
-                DepartmentTest.DeleteTestObject(obj, Repository);
-                PersonTest.DeleteTestObject(person, Repository);
-            }
-        }
-
         /// <summary>
         /// Creates the test department.
         /// </summary>
@@ -190,9 +157,17 @@ namespace School.Tests.Integration.Data
             var obj = new DepartmentDTO();
             obj.Name = departmentName;
             obj.Budget = budget;
-            obj.StartDate = startDate;            
+            obj.CreatedDate = startDate;
+
+            var departments = _repository.GetAllDepartments();
+
+            obj.DepartmentID = 1;
+
+            if (departments != null && departments.Count() > 0)
+            {
+                obj.DepartmentID += departments.Max(x => x.DepartmentID);
+            }
             
-            obj.DepartmentID = _repository.GetAllDepartments().Max(x => x.DepartmentID) + 1;
 
             obj = _repository.CreateDepartment(obj);
 

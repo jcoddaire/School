@@ -13,5 +13,7 @@ namespace School.DTOs
         public DateTime? HireDate { get; set; }
 
         public bool Terminated { get; set; }
+
+        public List<CourseDTO> Courses { get; set; }
     }
 }

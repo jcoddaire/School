@@ -11,9 +11,9 @@ namespace School.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PeopleController : ControllerBase
+    public class InstructorController : ControllerBase
     {
-        public PeopleController(ISchoolData repository)
+        public InstructorController(ISchoolData repository)
         {
             Repository = repository;
         }
@@ -23,9 +23,9 @@ namespace School.API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<PersonDTO> Get()
+        public IEnumerable<InstructorDTO> Get()
         {
-            return Repository.GetAllPersons();
+            return Repository.GetAllInstructors();
         }
 
         /// <summary>
@@ -34,15 +34,15 @@ namespace School.API.Controllers
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<PersonDTO> Get(int id)
+        public ActionResult<InstructorDTO> Get(int id)
         {
             if (id <= 0)
             {
                 return NotFound();
             }
 
-            var target = Repository.GetPerson(id);
-            if (target != null && target.PersonID > 0)
+            var target = Repository.GetInstructor(id);
+            if (target != null && target.InstructorID > 0)
             {
                 return target;
             }
@@ -58,7 +58,7 @@ namespace School.API.Controllers
         /// <returns></returns>
         /// <exception cref="HttpResponseException"></exception>
         [HttpPost]
-        public ActionResult<PersonDTO> Post(PersonDTO person)
+        public ActionResult<InstructorDTO> Post(InstructorDTO person)
         {
             if (person == null)
             {
@@ -66,11 +66,7 @@ namespace School.API.Controllers
                 return BadRequest();
             }
 
-            //check data.
-            //Not everyone has a name. Null / empty string is all valid. SO a totally empty PersonDTO object is valid.
-            //See this, point 40. http://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
-
-            person = Repository.CreatePerson(person);
+            person = Repository.CreateInstructor(person);
 
             return person;
         }
@@ -83,7 +79,7 @@ namespace School.API.Controllers
         /// <exception cref="HttpResponseException">
         /// </exception>
         [HttpPut]
-        public ActionResult<PersonDTO> Put(PersonDTO person)
+        public ActionResult<InstructorDTO> Put(InstructorDTO person)
         {
             if (person == null)
             {
@@ -91,13 +87,13 @@ namespace School.API.Controllers
                 return BadRequest();
             }
 
-            if (person.PersonID <= 0)
+            if (person.InstructorID <= 0)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetPerson(person.PersonID);
+            var foundPerson = Repository.GetInstructor(person.InstructorID);
             if (foundPerson == null)
             {
                 //return 404 not found.
@@ -107,14 +103,14 @@ namespace School.API.Controllers
             if (foundPerson.FirstName.Equals(person.FirstName)
                 && foundPerson.LastName.Equals(person.LastName)
                 && foundPerson.HireDate.Equals(person.HireDate)
-                && foundPerson.EnrollmentDate.Equals(person.EnrollmentDate))
+                && foundPerson.Terminated.Equals(person.Terminated))
             {
                 //There are no changes to the object.
                 //return 204 no change.
                 return person;
             }
 
-            person = Repository.UpdatePerson(person);
+            person = Repository.UpdateInstructor(person);
 
             return person;
         }
@@ -135,14 +131,14 @@ namespace School.API.Controllers
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetPerson(id);
+            var foundPerson = Repository.GetInstructor(id);
             if (foundPerson == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var result = Repository.DeletePerson(id);
+            var result = Repository.DeleteInstructor(id);
             if (result > 0)
             {
                 //return 204 no content.

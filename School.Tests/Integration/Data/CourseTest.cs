@@ -36,13 +36,13 @@ namespace School.Tests.Integration.Data
             var obj = CreateTestCourse(Repository);
 
             Assert.IsNotNull(obj.CourseID);
-            Assert.IsNotNull(obj.Title);
+            Assert.IsNotNull(obj.Name);
             Assert.IsNotNull(obj.Credits);
             Assert.IsNotNull(obj.DepartmentID);
 
             Assert.IsTrue(obj.CourseID > 0);
             Assert.IsTrue(obj.DepartmentID > 0);
-            Assert.IsTrue(obj.Title.Length > 5);
+            Assert.IsTrue(obj.Name.Length > 5);
 
             CourseTest.DeleteTestObject(obj, Repository);
         }
@@ -68,7 +68,7 @@ namespace School.Tests.Integration.Data
             {
                 var randomTitle = Guid.NewGuid().ToString();
 
-                obj.Title = randomTitle;
+                obj.Name = randomTitle;
 
                 obj = Repository.UpdateCourse(obj);
 
@@ -76,7 +76,7 @@ namespace School.Tests.Integration.Data
                 var updated = Repository.GetCourse(obj.CourseID);
 
                 Assert.IsNotNull(updated);
-                Assert.AreEqual(randomTitle, updated.Title);
+                Assert.AreEqual(randomTitle, updated.Name);
             }
             catch (Exception)
             {
@@ -165,14 +165,14 @@ namespace School.Tests.Integration.Data
         /// <returns></returns>
         public static CourseDTO CreateTestCourse(ISchoolData _repository)
         {            
-            var title = Guid.NewGuid().ToString();
+            var randomName = Guid.NewGuid().ToString();
             var random = new Random();
             var credits = random.Next(1, 4);
             var departmentID = DepartmentTest.CreateTestDepartment(_repository).DepartmentID;                 
             
             var obj = new CourseDTO();
             obj.CourseID = _repository.GetAllCourses().Max(x => x.CourseID) + 1;
-            obj.Title = title;
+            obj.Name = randomName;
             obj.Credits = credits;
             obj.DepartmentID = departmentID;
 

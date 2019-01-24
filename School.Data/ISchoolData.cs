@@ -205,13 +205,13 @@ namespace School.Data
         IEnumerable<StudentCourseDTO> GetAllStudentCourses();
 
         /// <summary>
-        /// Gets the StudentCourse.
+        /// Gets all courses associated with the given student.
         /// </summary>
-        /// <param name="StudentCourseID">The StudentCourse identifier.</param>
+        /// <param name="studentID">The Student ID.</param>
         /// <returns>
         /// A StudentCourse DTO object. If no StudentCourse was found, returns null.
         /// </returns>
-        StudentCourseDTO GetStudentCourse(int StudentCourseID);
+        IEnumerable<StudentCourseDTO> GetStudentCourse(int studentID);
 
         /// <summary>
         /// Creates the StudentCourse.
@@ -235,7 +235,7 @@ namespace School.Data
         /// The number of rows affected.
         /// If something failed, returns -1.
         /// </returns>
-        int DeleteStudentCourse(int StudentCourseID);
+        int DeleteStudentCourse(int studentID, int cousrseID, int enrolledYear, string enrolledSemester);
         #endregion
     }
 }

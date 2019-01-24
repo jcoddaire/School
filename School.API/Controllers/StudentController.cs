@@ -11,38 +11,38 @@ namespace School.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OnsiteCourseController : ControllerBase
+    public class StudentController : ControllerBase
     {
-        public OnsiteCourseController(ISchoolData repository)
+        public StudentController(ISchoolData repository)
         {
             Repository = repository;
         }
 
         /// <summary>
-        /// Gets all onsite courses in the system.
+        /// Gets all people in the system.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IEnumerable<OnsiteCourseDTO> Get()
+        public IEnumerable<StudentDTO> Get()
         {
-            return Repository.GetAllOnsiteCourses();
+            return Repository.GetAllStudents();
         }
 
         /// <summary>
-        /// Gets a given Onsite Course.
+        /// Gets a given person.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<OnsiteCourseDTO> Get(int id)
+        public ActionResult<StudentDTO> Get(int id)
         {
             if (id <= 0)
             {
                 return NotFound();
             }
 
-            var target = Repository.GetOnsiteCourse(id);
-            if (target != null && target.CourseID > 0)
+            var target = Repository.GetStudent(id);
+            if (target != null && target.StudentID > 0)
             {
                 return target;
             }
@@ -52,61 +52,71 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Creates a new Onsite Course.
+        /// Creates a new person.
         /// </summary>
-        /// <param name="onsiteCourse">The Onsite Course.</param>
+        /// <param name="person">The person.</param>
         /// <returns></returns>
         /// <exception cref="HttpResponseException"></exception>
         [HttpPost]
-        public ActionResult<OnsiteCourseDTO> Post(OnsiteCourseDTO onsiteCourse)
+        public ActionResult<StudentDTO> Post(StudentDTO person)
         {
-            if (onsiteCourse == null)
+            if (person == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            onsiteCourse = Repository.AddOnsiteCourse(onsiteCourse);
+            person = Repository.CreateStudent(person);
 
-            return onsiteCourse;
+            return person;
         }
 
         /// <summary>
-        /// Updates the specified Onsite Course.
+        /// Updates the specified person.
         /// </summary>
-        /// <param name="onsiteCourse">The Onsite Course.</param>
+        /// <param name="person">The person.</param>
         /// <returns></returns>
         /// <exception cref="HttpResponseException">
         /// </exception>
         [HttpPut]
-        public ActionResult<OnsiteCourseDTO> Put(OnsiteCourseDTO onsiteCourse)
+        public ActionResult<StudentDTO> Put(StudentDTO person)
         {
-            if (onsiteCourse == null)
+            if (person == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            if (onsiteCourse.CourseID <= 0)
+            if (person.StudentID <= 0)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var target = Repository.GetOnsiteCourse(onsiteCourse.CourseID);
-            if (target == null)
+            var foundPerson = Repository.GetStudent(person.StudentID);
+            if (foundPerson == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
-            
-            onsiteCourse = Repository.UpdateOnsiteCourse(onsiteCourse);
 
-            return onsiteCourse;
+            if (foundPerson.FirstName.Equals(person.FirstName)
+                && foundPerson.LastName.Equals(person.LastName)
+                && foundPerson.EnrollmentDate.Equals(person.EnrollmentDate)
+                && foundPerson.EnrollmentDate.Equals(person.EnrollmentDate))
+            {
+                //There are no changes to the object.
+                //return 204 no change.
+                return person;
+            }
+
+            person = Repository.UpdateStudent(person);
+
+            return person;
         }
 
         /// <summary>
-        /// Deletes the specified Onsite Course.
+        /// Deletes the specified person.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
@@ -121,14 +131,14 @@ namespace School.API.Controllers
                 return NotFound();
             }
 
-            var target = Repository.GetOnsiteCourse(id);
-            if (target == null)
+            var foundPerson = Repository.GetStudent(id);
+            if (foundPerson == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var result = Repository.DeleteOnsiteCourse(id);
+            var result = Repository.DeleteStudent(id);
             if (result > 0)
             {
                 //return 204 no content.

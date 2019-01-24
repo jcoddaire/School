@@ -27,10 +27,10 @@ namespace School.Tests.Integration.Data
             {
                 if (_repository == null)
                 {
-                    //var optionsBuilder = new DbContextOptionsBuilder<SchoolContext>();
-                    //optionsBuilder.UseSqlServer(TEST_CONNECTION_STRING);
-                    //var db = new SchoolContext(optionsBuilder.Options);                    
-                    //_repository = new SchoolServiceRepository(db);
+                    var optionsBuilder = new DbContextOptionsBuilder<SchoolContext>();
+                    optionsBuilder.UseSqlServer(TEST_CONNECTION_STRING);
+                    var db = new SchoolContext(optionsBuilder.Options);                    
+                    _repository = new SchoolServiceRepository(db);
                 }
 
                 return _repository;

@@ -15,10 +15,6 @@
 
   <ItemGroup>
     <Folder Include="Integration\Controllers\" />
-    <Folder Include="Integration\Data\" />
-    <Folder Include="Unit\Data\" />
-    <Folder Include="Unit\Controllers\" />
-    <Folder Include="Unit\Helpers\" />
   </ItemGroup>
 
   <ItemGroup>

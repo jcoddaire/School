@@ -30,37 +30,119 @@ namespace School.Data
 
         public IEnumerable<CourseDTO> GetAllCourses()
         {
-            throw new NotImplementedException();
+            var s = Database.Courses.Select(
+                a => new CourseDTO()
+                {
+                    CourseID = a.CourseId,
+                    Name = a.Name,
+                    Credits = a.Credits,
+                    DepartmentID = a.Department.DepartmentId
+                }).AsEnumerable<CourseDTO>();
+
+            return s;
         }
 
         public CourseDTO GetCourse(int courseID)
         {
-            throw new NotImplementedException();
+            if(courseID <= 0)
+            {
+                return null;
+            }
+
+            var target = Database.Courses.Where(c => c.CourseId == courseID)
+                .Select(a => new CourseDTO()
+                {
+                    CourseID = a.CourseId,
+                    Name = a.Name,
+                    Credits = a.Credits,
+                    DepartmentID = a.Department.DepartmentId
+
+                }).FirstOrDefault();
+
+            return target;
         }
 
         public CourseDTO CreateCourse(CourseDTO course)
         {
-            throw new NotImplementedException();
+            var newObj = new Courses
+            {
+                CourseId = course.CourseID,
+                Name = course.Name,
+                Credits = course.Credits,
+                DepartmentId = course.DepartmentID
+            };
+
+            Database.Courses.Add(newObj);
+            Database.SaveChanges();
+
+            course.CourseID = newObj.CourseId;
+
+            return course;
         }
 
         public CourseDTO UpdateCourse(CourseDTO course)
         {
-            throw new NotImplementedException();
+            var changedObj = Database.Courses.Where(p => p.CourseId == course.CourseID).FirstOrDefault();
+            if (changedObj == null || changedObj.CourseId != course.CourseID)
+            {
+                throw new KeyNotFoundException("Could not find a matching course in the system.");
+            }
+
+            changedObj.CourseId = course.CourseID;
+            changedObj.Name = course.Name;
+            changedObj.Credits = course.Credits;
+            changedObj.DepartmentId = course.DepartmentID;
+
+            Database.Courses.Attach(changedObj);
+
+            var entry = Database.Entry(changedObj);
+            entry.Property(e => e.CourseId).IsModified = true;
+            entry.Property(e => e.Name).IsModified = true;
+            entry.Property(e => e.Credits).IsModified = true;
+            entry.Property(e => e.DepartmentId).IsModified = true;
+
+            Database.SaveChanges();
+
+            return course;
         }
 
         public int DeleteCourse(int courseID)
         {
-            throw new NotImplementedException();
+            var target = Database.Courses.Where(x => x.CourseId == courseID).FirstOrDefault();
+
+            if (target != null && target.CourseId == courseID)
+            {
+                Database.Courses.Remove(target);
+                return Database.SaveChanges();
+            }
+            return -1;
         }
 
         public IEnumerable<CourseInstructorDTO> GetAllCourseInstructors()
         {
-            throw new NotImplementedException();
+            var s = Database.CourseInstructors.Select(
+                a => new CourseInstructorDTO()
+                {
+                    CourseID = a.CourseId,
+                    InstructorID = a.InstructorId
+
+                }).AsEnumerable<CourseInstructorDTO>();
+
+            return s;
         }
 
         public CourseInstructorDTO CreateCourseInstructor(CourseInstructorDTO course)
         {
-            throw new NotImplementedException();
+            var newObj = new CourseInstructors
+            {
+                CourseId = course.CourseID,
+                InstructorId = course.InstructorID
+            };
+
+            Database.CourseInstructors.Add(newObj);
+            Database.SaveChanges();                       
+
+            return course;
         }
 
         public CourseInstructorDTO UpdateCourseInstructor(CourseInstructorDTO course)
@@ -70,22 +152,68 @@ namespace School.Data
 
         public int DeleteCourseInstructor(CourseInstructorDTO course)
         {
-            throw new NotImplementedException();
+            var target = Database.CourseInstructors.Where(x => x.CourseId == course.CourseID && x.InstructorId == course.InstructorID).FirstOrDefault();
+
+            if (target != null && target.CourseId == course.CourseID && target.InstructorId == course.InstructorID)
+            {
+                Database.CourseInstructors.Remove(target);
+                return Database.SaveChanges();
+            }
+            return -1;
         }
 
         public IEnumerable<DepartmentDTO> GetAllDepartments()
         {
-            throw new NotImplementedException();
+            var s = Database.Departments.Select(
+                a => new DepartmentDTO()
+                {
+                    DepartmentID = a.DepartmentId,
+                    Name = a.Name,
+                    Budget = a.Budget,
+                    CreatedDate = a.CreatedDate
+
+                }).AsEnumerable<DepartmentDTO>();
+
+            return s;
         }
 
         public DepartmentDTO GetDepartment(int departmentID)
         {
-            throw new NotImplementedException();
+            if (departmentID <= 0)
+            {
+                return null;
+            }
+
+            var target = Database.Departments.Where(c => c.DepartmentId == departmentID)
+                .Select(a => new DepartmentDTO()
+                {
+                    DepartmentID = a.DepartmentId,
+                    Name = a.Name,
+                    Budget = a.Budget,
+                    CreatedDate = a.CreatedDate
+
+                }).FirstOrDefault();
+
+            return target;
         }
 
         public DepartmentDTO CreateDepartment(DepartmentDTO department)
         {
-            throw new NotImplementedException();
+
+            var newObj = new Departments
+            {
+                DepartmentId = department.DepartmentID,
+                Name = department.Name,
+                Budget = department.Budget,
+                CreatedDate = department.CreatedDate
+            };
+
+            Database.Departments.Add(newObj);
+            Database.SaveChanges();
+
+            department.DepartmentID = newObj.DepartmentId;
+
+            return department;
         }
 
         public DepartmentDTO UpdateDepartment(DepartmentDTO department)
@@ -95,22 +223,106 @@ namespace School.Data
 
         public int DeleteDepartment(int departmentID)
         {
-            throw new NotImplementedException();
+            var target = Database.Departments.Where(x => x.DepartmentId == departmentID).FirstOrDefault();
+
+            if (target != null && target.DepartmentId == departmentID)
+            {
+                Database.Departments.Remove(target);
+                return Database.SaveChanges();
+            }
+            return -1;
         }
 
         public IEnumerable<InstructorDTO> GetAllInstructors()
         {
-            throw new NotImplementedException();
+            var s = Database.Instructors.Select(
+                a => new InstructorDTO()
+                {
+                    InstructorID = a.InstructorId,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    HireDate = a.HireDate,
+                    Terminated = a.Terminated
+
+                }).AsEnumerable<InstructorDTO>();
+
+
+            var allCourseInstructors = Database.CourseInstructors.AsEnumerable();
+            var allCourses = GetAllCourses();
+
+            if (allCourseInstructors == null || allCourseInstructors.Count() <= 0)
+            {
+                return s;
+            }
+            if (allCourses == null || allCourses.Count() <= 0)
+            {
+                return s;
+            }
+
+            foreach (var i in s)
+            {
+                var currentCourses = allCourseInstructors.Where(c => c.InstructorId == i.InstructorID).AsEnumerable();
+                if(currentCourses != null && currentCourses.Count() > 0)
+                {
+                    foreach(var cc in currentCourses)
+                    {
+                        var dto = new CourseDTO();
+                        dto.CourseID = cc.CourseId;
+
+                        var courseDetail = allCourses.Where(x => x.CourseID == cc.CourseId).FirstOrDefault();
+                        if(courseDetail != null)
+                        {
+                            dto.Name = courseDetail.Name;
+                            dto.Credits = courseDetail.Credits;
+                            dto.DepartmentID = courseDetail.DepartmentID;
+                        }
+
+                        i.Courses.Add(dto);
+                    }
+                }
+            }
+
+            return s;
         }
 
         public InstructorDTO GetInstructor(int instructorID)
         {
-            throw new NotImplementedException();
+            if (instructorID <= 0)
+            {
+                return null;
+            }
+
+            var target = Database.Instructors.Where(c => c.InstructorId == instructorID)
+                .Select(a => new InstructorDTO()
+                {
+                    InstructorID = a.InstructorId,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    HireDate = a.HireDate,
+                    Terminated = a.Terminated
+
+                }).FirstOrDefault();
+
+            return target;
         }
 
         public InstructorDTO CreateInstructor(InstructorDTO instructor)
         {
-            throw new NotImplementedException();
+            var newObj = new Instructors
+            {
+                InstructorId = instructor.InstructorID,
+                FirstName = instructor.FirstName,
+                LastName = instructor.LastName,
+                HireDate = instructor.HireDate,
+                Terminated = instructor.Terminated
+            };
+
+            Database.Instructors.Add(newObj);
+            Database.SaveChanges();
+
+            instructor.InstructorID = newObj.InstructorId;
+
+            return instructor;
         }
 
         public InstructorDTO UpdateInstructor(InstructorDTO instructor)
@@ -120,22 +332,67 @@ namespace School.Data
 
         public int DeleteInstructor(int instructorID)
         {
-            throw new NotImplementedException();
+            var target = Database.Instructors.Where(x => x.InstructorId == instructorID).FirstOrDefault();
+
+            if (target != null && target.InstructorId == instructorID)
+            {
+                Database.Instructors.Remove(target);
+                return Database.SaveChanges();
+            }
+            return -1;
         }
 
         public IEnumerable<StudentDTO> GetAllStudents()
         {
-            throw new NotImplementedException();
+            var s = Database.Students.Select(
+                a => new StudentDTO()
+                {
+                    StudentID = a.StudentId,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    EnrollmentDate = a.EnrollmentDate
+
+                }).AsEnumerable<StudentDTO>();
+
+            return s;
         }
 
         public StudentDTO GetStudent(int StudentID)
         {
-            throw new NotImplementedException();
+            if (StudentID <= 0)
+            {
+                return null;
+            }
+
+            var target = Database.Students.Where(c => c.StudentId == StudentID)
+                .Select(a => new StudentDTO()
+                {
+                    StudentID = a.StudentId,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    EnrollmentDate = a.EnrollmentDate
+
+                }).FirstOrDefault();
+
+            return target;
         }
 
         public StudentDTO CreateStudent(StudentDTO Student)
         {
-            throw new NotImplementedException();
+            var newObj = new Students
+            {
+                FirstName = Student.FirstName,
+                LastName = Student.LastName,
+                EnrollmentDate = Student.EnrollmentDate
+
+            };
+
+            Database.Students.Add(newObj);
+            Database.SaveChanges();
+
+            Student.StudentID = newObj.StudentId;
+
+            return Student;
         }
 
         public StudentDTO UpdateStudent(StudentDTO student)
@@ -145,22 +402,79 @@ namespace School.Data
 
         public int DeleteStudent(int StudentID)
         {
-            throw new NotImplementedException();
+            var result = 0;
+
+            var target = Database.Students.Where(x => x.StudentId == StudentID).FirstOrDefault();
+
+            if (target != null && target.StudentId == StudentID)
+            {
+                //remove all student courses objects.
+                var courses = GetStudentCourse(StudentID);
+                if(courses != null && courses.Count() > 0)
+                {
+                    foreach(var c in courses)
+                    {
+                        result = DeleteStudentCourse(c.StudentID, c.CourseID, c.EnrolledYear, c.EnrolledSemester);
+                        if(result <= 0)
+                        {
+                            return -1;
+                        }
+                    }
+                    Database.SaveChanges();
+                }
+
+
+                Database.Students.Remove(target);
+                return Database.SaveChanges();
+            }
+            return -1;
         }
 
         public IEnumerable<StudentCourseDTO> GetAllStudentCourses()
         {
-            throw new NotImplementedException();
+
+            var s = Database.StudentCourses.Select(
+                a => new StudentCourseDTO()
+                {
+                    StudentID = a.StudentId,
+                    CourseID = a.CourseId,
+                    Grade = a.Grade,
+                    EnrolledYear = a.EnrolledYear,
+                    EnrolledSemester = a.EnrolledSemester,
+                    Completed = a.Completed,
+                    Dropped = a.Dropped,
+                    DroppedTime = a.DroppedTime
+
+                }).AsEnumerable<StudentCourseDTO>();
+
+            return s;
         }
 
-        public StudentCourseDTO GetStudentCourse(int StudentCourseID)
+        public IEnumerable<StudentCourseDTO> GetStudentCourse(int studentID)
         {
-            throw new NotImplementedException();
+            var target = GetAllStudentCourses().Where(x => x.StudentID == studentID).AsEnumerable();
+            return target;
         }
 
         public StudentCourseDTO CreateStudentCourse(StudentCourseDTO StudentCourse)
         {
-            throw new NotImplementedException();
+            var newObj = new StudentCourses
+            {
+                StudentId = StudentCourse.StudentID,
+                CourseId = StudentCourse.CourseID,
+                Grade = StudentCourse.Grade,
+                EnrolledYear = StudentCourse.EnrolledYear,
+                EnrolledSemester = StudentCourse.EnrolledSemester,
+                Completed = StudentCourse.Completed,
+                Dropped = StudentCourse.Dropped,
+                DroppedTime = StudentCourse.DroppedTime
+
+            };
+
+            Database.StudentCourses.Add(newObj);
+            Database.SaveChanges();
+
+            return StudentCourse;
         }
 
         public StudentCourseDTO UpdateStudentCourse(StudentCourseDTO StudentCourse)
@@ -168,9 +482,21 @@ namespace School.Data
             throw new NotImplementedException();
         }
 
-        public int DeleteStudentCourse(int StudentCourseID)
+        public int DeleteStudentCourse(int studentID, int cousrseID, int enrolledYear, string enrolledSemester)
         {
-            throw new NotImplementedException();
+            var target = Database.StudentCourses.Where(x => x.CourseId == cousrseID && x.StudentId == studentID && x.EnrolledYear == enrolledYear && x.EnrolledSemester == enrolledSemester).FirstOrDefault();
+
+            if (target != null
+                 && target.StudentId == studentID
+                 && target.CourseId == cousrseID
+                 && target.EnrolledYear == enrolledYear
+                 && target.EnrolledSemester == enrolledSemester
+                 )
+            {
+                Database.StudentCourses.Remove(target);
+                return Database.SaveChanges();
+            }
+            return -1;
         }
     }
 }
