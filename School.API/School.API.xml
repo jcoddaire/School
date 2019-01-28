@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>School.API</name>
+    </assembly>
+    <members>
+        <member name="M:School.API.Controllers.CourseController.Get">
+            <summary>
+            Gets all courses in the system.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.CourseController.Get(System.Int32)">
+            <summary>
+            Gets a given course.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.CourseController.Post(School.DTOs.CourseDTO)">
+            <summary>
+            Creates a new course.
+            </summary>
+            <param name="course">The course.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.CourseController.Put(School.DTOs.CourseDTO)">
+            <summary>
+            Updates the specified course.
+            </summary>
+            <param name="course">The course.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.CourseController.Delete(System.Int32)">
+            <summary>
+            Deletes the specified course.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.DepartmentController.Get">
+            <summary>
+            Gets all departments in the system.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.DepartmentController.Get(System.Int32)">
+            <summary>
+            Gets a given Department.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.DepartmentController.Post(School.DTOs.DepartmentDTO)">
+            <summary>
+            Creates a new department.
+            </summary>
+            <param name="department">The department.</param>
+            <returns></returns>
+            <exception cref="!:HttpResponseException"></exception>
+        </member>
+        <member name="M:School.API.Controllers.DepartmentController.Put(School.DTOs.DepartmentDTO)">
+            <summary>
+            Updates the specified department.
+            </summary>
+            <param name="department">The department.</param>
+            <returns></returns>
+            <exception cref="!:HttpResponseException">
+            </exception>
+        </member>
+        <member name="M:School.API.Controllers.DepartmentController.Delete(System.Int32)">
+            <summary>
+            Deletes the specified department.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+            <exception cref="!:HttpResponseException">
+            </exception>
+        </member>
+        <member name="M:School.API.Controllers.InstructorController.Get">
+            <summary>
+            Gets all instructors in the system.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.InstructorController.AddCourses(System.Collections.Generic.List{School.DTOs.InstructorDTO})">
+            <summary>Adds courses to the list of instructors.</summary>
+            <param name="instructors">The instructors.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.InstructorController.Get(System.Int32)">
+            <summary>
+            Gets a single instructor
+            </summary>
+            <param name="id">The instructor ID.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.InstructorController.Post(School.DTOs.InstructorDTO)">
+            <summary>
+            Creates a new instructor.
+            </summary>
+            <param name="person">The instructor.</param>
+        </member>
+        <member name="M:School.API.Controllers.InstructorController.Put(School.DTOs.InstructorDTO)">
+            <summary>
+            Updates the instructor.
+            </summary>
+            <param name="person">The instructor.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.InstructorController.Delete(System.Int32)">
+            <summary>
+            Deletes the instructor.
+            </summary>
+            <param name="id">The instructor.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.StudentController.Get">
+            <summary>
+            Gets all people in the system.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.StudentController.Get(System.Int32)">
+            <summary>
+            Gets a given person.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.StudentController.Post(School.DTOs.StudentDTO)">
+            <summary>
+            Creates a new person.
+            </summary>
+            <param name="person">The person.</param>
+            <returns></returns>
+            <exception cref="!:HttpResponseException"></exception>
+        </member>
+        <member name="M:School.API.Controllers.StudentController.Put(School.DTOs.StudentDTO)">
+            <summary>
+            Updates the specified person.
+            </summary>
+            <param name="person">The person.</param>
+            <returns></returns>
+            <exception cref="!:HttpResponseException">
+            </exception>
+        </member>
+        <member name="M:School.API.Controllers.StudentController.Delete(System.Int32)">
+            <summary>
+            Deletes the specified person.
+            </summary>
+            <param name="id">The identifier.</param>
+            <returns></returns>
+            <exception cref="!:HttpResponseException">
+            </exception>
+        </member>
+    </members>
+</doc>

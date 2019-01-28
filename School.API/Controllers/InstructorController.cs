@@ -19,19 +19,24 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Gets all people in the system.
+        /// Gets all instructors in the system.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IEnumerable<InstructorDTO> Get()
         {
-            return Repository.GetAllInstructors();
+            var instructors = Repository.GetAllInstructors().ToList();
+
+            //Add course data to the instructors objects.
+            instructors = AddCourses(instructors);
+
+            return instructors;
         }
 
         /// <summary>
-        /// Gets a given person.
+        /// Gets a single instructor
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The instructor ID.</param>
         /// <returns></returns>
         [HttpGet("{id}")]
         public ActionResult<InstructorDTO> Get(int id)
@@ -44,7 +49,12 @@ namespace School.API.Controllers
             var target = Repository.GetInstructor(id);
             if (target != null && target.InstructorID > 0)
             {
-                return target;
+                //TODO: fix this. Data layer maybe.
+                var n = new List<InstructorDTO>();
+                n.Add(target);
+                n = AddCourses(n);
+
+                return n.FirstOrDefault();
             }
 
             //cannot find it, throw a 404.
@@ -52,11 +62,9 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Creates a new person.
+        /// Creates a new instructor.
         /// </summary>
-        /// <param name="person">The person.</param>
-        /// <returns></returns>
-        /// <exception cref="HttpResponseException"></exception>
+        /// <param name="person">The instructor.</param>
         [HttpPost]
         public ActionResult<InstructorDTO> Post(InstructorDTO person)
         {
@@ -72,12 +80,10 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Updates the specified person.
+        /// Updates the instructor.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="person">The instructor.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException">
-        /// </exception>
         [HttpPut]
         public ActionResult<InstructorDTO> Put(InstructorDTO person)
         {
@@ -116,12 +122,10 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Deletes the specified person.
+        /// Deletes the instructor.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The instructor.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException">
-        /// </exception>
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
@@ -147,6 +151,38 @@ namespace School.API.Controllers
 
             //something went wrong. TODO: find a better way to handle this.            
             return StatusCode(500, "This should never happen.");
+        }
+
+        /// <summary>Adds courses to the list of instructors.</summary>
+        /// <param name="instructors">The instructors.</param>
+        /// <returns></returns>
+        private List<InstructorDTO> AddCourses(List<InstructorDTO> instructors)
+        {
+            var courses = Repository.GetAllCourses().ToList();
+            if (courses == null || courses.Count() <= 0)
+            {
+                return instructors;
+            }
+
+            foreach (var i in instructors)
+            {
+                i.Courses = new List<CourseDTO>();
+
+                var instructorCourses = Repository.GetCoursesByInstructor(i.InstructorID);
+                if (instructorCourses != null && instructorCourses.Count() > 0)
+                {
+                    foreach (var ic in instructorCourses)
+                    {
+                        var courseData = courses.Where(x => x.CourseID == ic.CourseID).FirstOrDefault();
+                        if (courseData != null)
+                        {
+                            i.Courses.Add(courseData);
+                        }
+                    }
+                }
+            }
+
+            return instructors;
         }
     }
 }

@@ -43,6 +43,7 @@ namespace School.API
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "School Service", Version = "v1" });
+                c.IncludeXmlComments(@"C:\source\School\School.API\School.API.xml");
             });
 
         }

@@ -44,4 +44,8 @@
     <TypeScriptSourceRoot />
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\source\School\School.API\School.API.xml</DocumentationFile>
+  </PropertyGroup>
+
 </Project>

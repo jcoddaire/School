@@ -56,7 +56,6 @@ namespace School.API.Controllers
         /// </summary>
         /// <param name="course">The course.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException"></exception>
         [HttpPost]
         public ActionResult<CourseDTO> Post(CourseDTO course)
         {
@@ -76,8 +75,6 @@ namespace School.API.Controllers
         /// </summary>
         /// <param name="course">The course.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException">
-        /// </exception>
         [HttpPut]
         public ActionResult<CourseDTO> Put(CourseDTO course)
         {
@@ -110,8 +107,6 @@ namespace School.API.Controllers
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException">
-        /// </exception>
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
