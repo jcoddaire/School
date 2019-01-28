@@ -43,6 +43,10 @@ namespace School.Tests.Integration.Data
             Assert.AreEqual("Subject", obj.LastName);
             Assert.IsNull(obj.HireDate);
 
+            var allInstructors = Repository.GetAllInstructors();
+            Assert.IsNotNull(allInstructors);
+            Assert.IsTrue(allInstructors.Count() > 0);
+
             InstructorsTest.DeleteTestObject(obj, Repository);
         }
 
@@ -163,6 +167,78 @@ namespace School.Tests.Integration.Data
             }
         }
 
+        [TestMethod]
+        public void UpdateInstructor_Test_Terminated_False_True()
+        {
+            var obj = CreateTestInstructor(Repository);
+            //confirm they are saved in the database.
+            Assert.IsTrue(obj.InstructorID > 0);
+
+            try
+            {
+                var terminatedStatus = true;
+
+                obj.Terminated = terminatedStatus;
+
+                obj = Repository.UpdateInstructor(obj);
+
+                //confirm the object was updated.
+                var updatedInstructor = Repository.GetInstructor(obj.InstructorID);
+
+                Assert.IsNotNull(updatedInstructor);
+                Assert.IsTrue(updatedInstructor.Terminated);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                //Remove the test data.
+                InstructorsTest.DeleteTestObject(obj, Repository);
+            }
+        }
+
+
+        [TestMethod]
+        public void UpdateInstructor_Test_Terminated_True_False()
+        {
+            var obj = CreateTestInstructor(Repository);
+            //confirm they are saved in the database.
+            Assert.IsTrue(obj.InstructorID > 0);
+
+            //the default sets the Terminated Status to false. Update it to true first before running the test.
+            obj.Terminated = true;
+            obj = Repository.UpdateInstructor(obj);
+
+
+            try
+            {
+                Assert.IsTrue(obj.Terminated);
+
+                var terminatedStatus = false;
+
+                obj.Terminated = terminatedStatus;
+
+                obj = Repository.UpdateInstructor(obj);
+
+                //confirm the object was updated.
+                var updatedInstructor = Repository.GetInstructor(obj.InstructorID);
+
+                Assert.IsNotNull(updatedInstructor);
+                Assert.IsFalse(updatedInstructor.Terminated);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                //Remove the test data.
+                InstructorsTest.DeleteTestObject(obj, Repository);
+            }
+        }
+
         /// <summary>
         /// Creates the test Instructor.
         /// </summary>
@@ -180,6 +256,7 @@ namespace School.Tests.Integration.Data
             Instructor.LastName = lastName;
             Instructor.HireDate = hireDate;
             Instructor.HireDate = HireDate;
+            Instructor.Terminated = false;
 
             Instructor = Repository.CreateInstructor(Instructor);
 

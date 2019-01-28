@@ -44,6 +44,11 @@ namespace School.Tests.Integration.Data
             Assert.IsTrue(obj.DepartmentID > 0);
             Assert.IsTrue(obj.Name.Length > 5);
 
+            var allCourses = Repository.GetAllCourses();
+            Assert.IsNotNull(allCourses);
+            Assert.IsTrue(allCourses.Count() > 0);
+
+
             CourseTest.DeleteTestObject(obj, Repository);
         }
         
@@ -60,15 +65,15 @@ namespace School.Tests.Integration.Data
         }
 
         [TestMethod]
-        public void UpdateCourse_Test_Title()
+        public void UpdateCourse_Test_Name()
         {
             var obj = CreateTestCourse(Repository);
 
             try
             {
-                var randomTitle = Guid.NewGuid().ToString();
+                var randomName = Guid.NewGuid().ToString();
 
-                obj.Name = randomTitle;
+                obj.Name = randomName;
 
                 obj = Repository.UpdateCourse(obj);
 
@@ -76,7 +81,7 @@ namespace School.Tests.Integration.Data
                 var updated = Repository.GetCourse(obj.CourseID);
 
                 Assert.IsNotNull(updated);
-                Assert.AreEqual(randomTitle, updated.Name);
+                Assert.AreEqual(randomName, updated.Name);
             }
             catch (Exception)
             {

@@ -35,6 +35,10 @@ namespace School.Tests.Integration.Data
             Assert.AreEqual(DateTime.Today, obj.CreatedDate);
             Assert.AreEqual(1000000, obj.Budget);
 
+            var allDepartments = Repository.GetAllDepartments();
+            Assert.IsNotNull(allDepartments);
+            Assert.IsTrue(allDepartments.Count() > 0);
+
             DepartmentTest.DeleteTestObject(obj, Repository);
         }
 
@@ -113,7 +117,7 @@ namespace School.Tests.Integration.Data
         }
         
         [TestMethod]
-        public void UpdateDepartment_Test_StartDate()
+        public void UpdateDepartment_Test_CreatedDate()
         {
             var obj = CreateTestDepartment(Repository);
 
