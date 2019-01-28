@@ -62,9 +62,7 @@ namespace School.Data
                 entity.HasKey(e => e.CourseId)
                     .HasName("PK_School.Course");
 
-                entity.Property(e => e.CourseId)
-                    .HasColumnName("CourseID")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.CourseId).HasColumnName("CourseID").UseSqlServerIdentityColumn();
 
                 entity.Property(e => e.DepartmentId).HasColumnName("DepartmentID");
 

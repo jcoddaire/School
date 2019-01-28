@@ -10,6 +10,7 @@ namespace School.DTOs
 
         public string LastName { get; set; }
 
-        public DateTime? EnrollmentDate { get; set; }        
+        public DateTime? EnrollmentDate { get; set; }
+        public List<StudentCourseDTO> Courses { get; set; }
     }
 }

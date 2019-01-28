@@ -176,7 +176,7 @@ namespace School.Tests.Integration.Data
             var departmentID = DepartmentTest.CreateTestDepartment(_repository).DepartmentID;                 
             
             var obj = new CourseDTO();
-            obj.CourseID = _repository.GetAllCourses().Max(x => x.CourseID) + 1;
+            obj.CourseID = 0;
             obj.Name = randomName;
             obj.Credits = credits;
             obj.DepartmentID = departmentID;

@@ -101,7 +101,7 @@ IF NOT EXISTS (SELECT * FROM sys.objects
 		AND type in (N'U'))
 BEGIN
 CREATE TABLE [dbo].[Courses](
-	[CourseID] [int] NOT NULL,
+	[CourseID] [int] NOT NULL IDENTITY(5001, 1),
 	[Name] [nvarchar](100) NOT NULL,
 	[Credits] [int] NOT NULL,
 	[DepartmentID] [int] NOT NULL,
@@ -230,16 +230,16 @@ INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES 
 INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Raymundo', 'Criner', '2017-01-06');
 INSERT INTO [dbo].[Students] ([FirstName] ,[LastName] ,[EnrollmentDate]) VALUES ('Roseann', 'Scott', '2017-01-06');
 
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5001, 'Intro to Math', 3, 1002);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5002, 'Intro to Chem', 3, 1005);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5003, 'Intro to Bio', 3, 1005);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5004, 'Advanced Engineering', 3, 1002);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5005, 'Historical Singers', 2, 1004);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5006, 'Intro to Planking', 1, 1002);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5007, 'Advanced Diagnosises', 5, 1005);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5008, 'Macroeconomics', 3, 1001);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5009, 'Accounting 302', 3, 1001);
-INSERT INTO [dbo].[Courses] ([CourseID] ,[Name] ,[Credits] ,[DepartmentID]) VALUES (5010, 'Advanced Sciences', 4, 1003);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Intro to Math', 3, 1002);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Intro to Chem', 3, 1005);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Intro to Bio', 3, 1005);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Advanced Engineering', 3, 1002);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Historical Singers', 2, 1004);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Intro to Planking', 1, 1002);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Advanced Diagnosises', 5, 1005);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Macroeconomics', 3, 1001);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Accounting 302', 3, 1001);
+INSERT INTO [dbo].[Courses] ([Name] ,[Credits] ,[DepartmentID]) VALUES ('Advanced Sciences', 4, 1003);
 
 INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5001, 1);
 INSERT INTO [dbo].[CourseInstructors] ([CourseID] ,[InstructorID]) VALUES (5006, 1);

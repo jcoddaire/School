@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace School.Data
 {
@@ -11,6 +12,7 @@ namespace School.Data
             StudentCourses = new HashSet<StudentCourses>();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CourseId { get; set; }
         public string Name { get; set; }
         public int Credits { get; set; }
