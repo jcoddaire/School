@@ -3,8 +3,10 @@ GO
 
 
 SELECT TOP 100 * FROM dbo.Courses WITH(NOLOCK)
-SELECT TOP 100 * FROM dbo.CourseInstructors WITH(NOLOCK)
 SELECT TOP 100 * FROM dbo.Departments WITH(NOLOCK)
+
 SELECT TOP 100 * FROM dbo.Instructors WITH(NOLOCK)
+SELECT TOP 100 * FROM dbo.CourseInstructors WITH(NOLOCK)
+
 SELECT TOP 100 * FROM dbo.StudentCourses WITH(NOLOCK)
 SELECT TOP 100 * FROM dbo.Students WITH(NOLOCK)

@@ -83,11 +83,6 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:School.API.Controllers.InstructorController.AddCourses(System.Collections.Generic.List{School.DTOs.InstructorDTO})">
-            <summary>Adds courses to the list of instructors.</summary>
-            <param name="instructors">The instructors.</param>
-            <returns></returns>
-        </member>
         <member name="M:School.API.Controllers.InstructorController.Get(System.Int32)">
             <summary>
             Gets a single instructor
@@ -99,13 +94,13 @@
             <summary>
             Creates a new instructor.
             </summary>
-            <param name="person">The instructor.</param>
+            <param name="instructor">The instructor.</param>
         </member>
         <member name="M:School.API.Controllers.InstructorController.Put(School.DTOs.InstructorDTO)">
             <summary>
             Updates the instructor.
             </summary>
-            <param name="person">The instructor.</param>
+            <param name="instructor">The instructor.</param>
             <returns></returns>
         </member>
         <member name="M:School.API.Controllers.InstructorController.Delete(System.Int32)">

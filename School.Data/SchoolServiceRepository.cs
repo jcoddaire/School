@@ -133,11 +133,11 @@ namespace School.Data
 
         /// <summary>Gets a list of courses that instructors teach.</summary>
         /// <param name="instructorID">The instructor ID that teaches the courses.</param>
-        public IEnumerable<CourseInstructorDTO> GetCoursesByInstructor(int instructorID)
+        public IEnumerable<CourseDTO> GetCoursesByInstructor(int instructorID)
         {
             if(instructorID <= 0)
             {
-                return null;
+                return new List<CourseDTO>();
             }
 
             var s = Database.CourseInstructors.Where(x => x.InstructorId == instructorID).Select(
@@ -148,9 +148,29 @@ namespace School.Data
 
                 }).AsEnumerable<CourseInstructorDTO>();
 
-            return s;
-        }
+            var courses = GetAllCourses().ToList();
+            if (courses == null || courses.Count() <= 0)
+            {
+                return new List<CourseDTO>();
+            }
+            if (s == null || s.Count() <= 0)
+            {
+                return new List<CourseDTO>();
+            }
 
+            var result = new List<CourseDTO>();
+
+            foreach (var c in s)
+            {
+                var courseData = courses.Where(x => x.CourseID == c.CourseID).FirstOrDefault();
+                if (courseData != null)
+                {
+                    result.Add(courseData);
+                }                
+            }
+
+            return result;
+        }
 
 
         public CourseInstructorDTO AssignCourseToInstructor(CourseInstructorDTO course)
@@ -272,7 +292,7 @@ namespace School.Data
 
         public IEnumerable<InstructorDTO> GetAllInstructors()
         {
-            var s = Database.Instructors.Select(
+            var allInstructors = Database.Instructors.Select(
                 a => new InstructorDTO()
                 {
                     InstructorID = a.InstructorId,
@@ -281,46 +301,29 @@ namespace School.Data
                     HireDate = a.HireDate,
                     Terminated = a.Terminated
 
-                }).AsEnumerable<InstructorDTO>();
+                }).ToList<InstructorDTO>();
 
 
             var allCourseInstructors = Database.CourseInstructors.AsEnumerable();
-            var allCourses = GetAllCourses();
 
             if (allCourseInstructors == null || allCourseInstructors.Count() <= 0)
             {
-                return s;
-            }
-            if (allCourses == null || allCourses.Count() <= 0)
-            {
-                return s;
+                return allInstructors;
             }
 
-            foreach (var i in s)
+            foreach (var i in allInstructors)
             {
-                i.Courses = new List<CourseDTO>();
-                var currentCourses = allCourseInstructors.Where(c => c.InstructorId == i.InstructorID).AsEnumerable();
-                if(currentCourses != null && currentCourses.Count() > 0)
+                if(i != null && i.InstructorID > 0)
                 {
-                    foreach(var cc in currentCourses)
-                    {
-                        var dto = new CourseDTO();
-                        dto.CourseID = cc.CourseId;
-
-                        var courseDetail = allCourses.Where(x => x.CourseID == cc.CourseId).FirstOrDefault();
-                        if(courseDetail != null)
-                        {
-                            dto.Name = courseDetail.Name;
-                            dto.Credits = courseDetail.Credits;
-                            dto.DepartmentID = courseDetail.DepartmentID;
-                        }
-
-                        i.Courses.Add(dto);
-                    }
+                    i.Courses = GetCoursesByInstructor(i.InstructorID).ToList();
                 }
+                else
+                {
+                    i.Courses = new List<CourseDTO>();
+                }                
             }
 
-            return s;
+            return allInstructors;
         }
 
         public InstructorDTO GetInstructor(int instructorID)
@@ -330,7 +333,7 @@ namespace School.Data
                 return null;
             }
 
-            var target = Database.Instructors.Where(c => c.InstructorId == instructorID)
+            var instructor = Database.Instructors.Where(c => c.InstructorId == instructorID)
                 .Select(a => new InstructorDTO()
                 {
                     InstructorID = a.InstructorId,
@@ -341,7 +344,12 @@ namespace School.Data
 
                 }).FirstOrDefault();
 
-            return target;
+            if(instructor != null)
+            {
+                instructor.Courses = GetCoursesByInstructor(instructor.InstructorID).ToList();
+            }
+
+            return instructor;
         }
 
         public InstructorDTO CreateInstructor(InstructorDTO instructor)
@@ -360,6 +368,76 @@ namespace School.Data
 
             instructor.InstructorID = newObj.InstructorId;
 
+            if(instructor.Courses != null && instructor.Courses.Count() > 0)
+            {
+                instructor = AddCourses(instructor);
+            }
+
+            return instructor;
+        }
+
+        /// <summary>Adds courses to the list of instructors.</summary>
+        /// <param name="instructors">The instructors.</param>
+        /// <returns></returns>
+        private InstructorDTO AddCourses(InstructorDTO instructor)
+        {
+            if(instructor == null)
+            {
+                return instructor;
+            }
+
+            //make sure the courses exist.
+            var allCourses = GetAllCourses().ToList();
+            if (allCourses == null || allCourses.Count() <= 0)
+            {
+                return instructor;
+            }     
+            
+            foreach(var c in instructor.Courses)
+            {
+                if(!allCourses.Any(x => x.CourseID == c.CourseID))
+                {
+                    throw new KeyNotFoundException($"The course ID {c.CourseID} was not found in the system.");
+                }
+            }
+
+            //hooray, the courses exist!
+
+            //make sure the courses are not already assigned.
+            var instructorCourses = GetCoursesByInstructor(instructor.InstructorID);
+            var coursesToAdd = instructor.Courses;
+            if (instructorCourses != null && instructorCourses.Count() > 0)
+            {
+                foreach (var ic in instructorCourses)
+                {
+                    if(instructor.Courses.Any(x => x.CourseID == ic.CourseID))
+                    {
+                        coursesToAdd.Remove(coursesToAdd.Where(x => x.CourseID == ic.CourseID).First());
+                    }
+                }
+            }
+
+            //All new courses should be in the CoursesToAdd object. Save just those.
+            var doSave = false;
+            foreach(var i in coursesToAdd)
+            {
+                var courseInstructor = new CourseInstructors()
+                {
+                    CourseId = i.CourseID,
+                    InstructorId = instructor.InstructorID
+                };
+
+                Database.CourseInstructors.Add(courseInstructor);
+                doSave = true;
+            }
+
+            if (doSave)
+            {
+                Database.SaveChanges();
+            }
+
+            instructor.Courses = GetCoursesByInstructor(instructor.InstructorID).ToList();
+
             return instructor;
         }
 
@@ -369,6 +447,19 @@ namespace School.Data
             if (changedObj == null || changedObj.InstructorId != instructor.InstructorID)
             {
                 throw new KeyNotFoundException("Could not find a matching instructor in the system.");
+            }
+
+            if (instructor.Courses != null && instructor.Courses.Count() > 0)
+            {
+                var allCourses = GetAllCourses();
+                foreach (var i in instructor.Courses)
+                {
+                    //make sure the course exists in the system before adding it.
+                    if (!allCourses.Any(x => x.CourseID == i.CourseID))
+                    {
+                        throw new KeyNotFoundException($"The course ID {i.CourseID} was not found in the system. Please add the course first.");
+                    }                    
+                }
             }
 
             changedObj.InstructorId = instructor.InstructorID;
@@ -387,7 +478,65 @@ namespace School.Data
 
             Database.SaveChanges();
 
+            //check if any courses changed. Then update those too.
+            var courses = GetAllCourses().ToList();
+            if (courses != null && courses.Count() > 0)
+            {
+                //remove all current instructor course assignments for the current instructor.
+
+                //Cast to List to prevent this error:
+                //New transaction is not allowed because there are other threads running in the session.
+                //I miss stored procedures. And static methods. They were so simple.
+                var instructorCourses = Database.CourseInstructors.Where(x => x.InstructorId == instructor.InstructorID).ToList();
+                foreach(var c in instructorCourses)
+                {
+                    DeleteInstructorCourse(c.InstructorId, c.CourseId);
+                }
+             
+                //If any courses need to be assigned, readd them.
+                //There's probably a more efficient way to do this but time.
+                if(instructor.Courses != null && instructor.Courses.Count() > 0)
+                {                    
+                    foreach (var i in instructor.Courses)
+                    {
+                        AddInstructorCourse(instructor.InstructorID, i.CourseID);
+                    }
+                }
+            }
+
             return instructor;
+        }
+
+        /// <summary></summary>
+        /// <param name="instructorID"></param>
+        /// <param name="courseID"></param>
+        private int DeleteInstructorCourse(int instructorID, int courseID)
+        {
+            var target = Database.CourseInstructors.Where(x => x.InstructorId == instructorID && x.CourseId == courseID).FirstOrDefault();
+            if (target != null)
+            {
+                Database.CourseInstructors.Remove(target);
+                return Database.SaveChanges();
+            }
+            return -1;
+        }
+
+        /// <summary></summary>
+        /// <param name="instructorID"></param>
+        /// <param name="courseID"></param>
+        private int AddInstructorCourse(int instructorID, int courseID)
+        {
+            var target = Database.CourseInstructors.Where(x => x.InstructorId == instructorID && x.CourseId == courseID).FirstOrDefault();
+            if (target == null)
+            {
+                target = new CourseInstructors();
+                target.InstructorId = instructorID;
+                target.CourseId = courseID;
+
+                Database.CourseInstructors.Add(target);
+                return Database.SaveChanges();
+            }
+            return -1;
         }
 
         public int DeleteInstructor(int instructorID)
@@ -396,6 +545,13 @@ namespace School.Data
 
             if (target != null && target.InstructorId == instructorID)
             {
+                var instructorCourses = GetCoursesByInstructor(instructorID);
+                foreach(var ii in instructorCourses)
+                {
+                    var removalCantidate = Database.CourseInstructors.Where(x => x.CourseId == ii.CourseID && x.InstructorId == instructorID).First();
+                    Database.CourseInstructors.Remove(removalCantidate);
+                }
+
                 Database.Instructors.Remove(target);
                 return Database.SaveChanges();
             }

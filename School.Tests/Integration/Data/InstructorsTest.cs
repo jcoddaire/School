@@ -4,6 +4,7 @@ using System.Linq;
 using School.DTOs;
 using School.Data;
 using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
 
 namespace School.Tests.Integration.Data
 {
@@ -12,7 +13,7 @@ namespace School.Tests.Integration.Data
     public class InstructorsTest : TestBase
     {   
         [TestMethod]
-        public void AddInstructor_Test()
+        public void AddInstructor_Test_no_courses()
         {
             var currentPeopleCount = Repository.GetAllInstructors().Count();
 
@@ -24,11 +25,174 @@ namespace School.Tests.Integration.Data
 
             Assert.IsTrue(Repository.GetAllInstructors().Count() > currentPeopleCount);
 
-            InstructorsTest.DeleteTestObject(obj, Repository);
+            InstructorsTest.DeleteTestInstructor(obj, Repository);
+        }
+        
+        [TestMethod]
+        public void AddInstructor_Test_one_course()
+        {
+            const int EXPECTED_COURSE_COUNT = 1;
+
+            var currentPeopleCount = Repository.GetAllInstructors().Count();            
+            var course = CourseTest.CreateTestCourse(Repository);
+
+            var targetUnderTest = new InstructorDTO();
+            targetUnderTest.FirstName = "Test";
+            targetUnderTest.LastName = "Subject";
+            targetUnderTest.Courses = new List<CourseDTO>();
+            targetUnderTest.Courses.Add(course);
+
+            try
+            {
+                targetUnderTest = Repository.CreateInstructor(targetUnderTest);
+                Assert.IsTrue(Repository.GetAllInstructors().Count() > currentPeopleCount);
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                InstructorsTest.DeleteTestInstructor(targetUnderTest, Repository);
+                CourseTest.DeleteTestObject(course, Repository);
+                Repository.DeleteDepartment(course.DepartmentID);
+            }
+        }
+        
+        [TestMethod]
+        public void AddInstructor_Test_two_courses()
+        {
+            const int EXPECTED_COURSE_COUNT = 2;
+
+            var currentPeopleCount = Repository.GetAllInstructors().Count();
+            var course1 = CourseTest.CreateTestCourse(Repository);
+            var course2 = CourseTest.CreateTestCourse(Repository);
+
+            var targetUnderTest = new InstructorDTO();
+            targetUnderTest.FirstName = "Test";
+            targetUnderTest.LastName = "Subject";
+            targetUnderTest.Courses = new List<CourseDTO>();
+            targetUnderTest.Courses.Add(course1);
+            targetUnderTest.Courses.Add(course2);
+
+            try
+            {
+                targetUnderTest = Repository.CreateInstructor(targetUnderTest);
+                Assert.IsTrue(Repository.GetAllInstructors().Count() > currentPeopleCount);
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                InstructorsTest.DeleteTestInstructor(targetUnderTest, Repository);
+                CourseTest.DeleteTestObject(course1, Repository);
+                CourseTest.DeleteTestObject(course2, Repository);
+                Repository.DeleteDepartment(course1.DepartmentID);
+                Repository.DeleteDepartment(course2.DepartmentID);
+            }
         }
 
         [TestMethod]
-        public void ReadInstructor_Test()
+        public void AddInstructor_Test_two_courses_to_zero()
+        {
+            const int BASE_COURSE_COUNT = 2;
+            const int EXPECTED_COURSE_COUNT = 0;
+
+            var currentPeopleCount = Repository.GetAllInstructors().Count();
+            var course1 = CourseTest.CreateTestCourse(Repository);
+            var course2 = CourseTest.CreateTestCourse(Repository);
+
+            var targetUnderTest = new InstructorDTO();
+            targetUnderTest.FirstName = "Test";
+            targetUnderTest.LastName = "Subject";
+            targetUnderTest.Courses = new List<CourseDTO>();
+            targetUnderTest.Courses.Add(course1);
+            targetUnderTest.Courses.Add(course2);
+
+            try
+            {
+                //Add the courses. Make sure they add correctly.
+                targetUnderTest = Repository.CreateInstructor(targetUnderTest);
+                Assert.IsTrue(Repository.GetAllInstructors().Count() > currentPeopleCount);
+                Assert.AreEqual(BASE_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+
+                //Remove the courses.
+                targetUnderTest.Courses = new List<CourseDTO>();
+
+                //Save it. Verify the course count updates.
+                targetUnderTest = Repository.UpdateInstructor(targetUnderTest);
+                Assert.IsTrue(Repository.GetAllInstructors().Count() > currentPeopleCount);
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                InstructorsTest.DeleteTestInstructor(targetUnderTest, Repository);
+                CourseTest.DeleteTestObject(course1, Repository);
+                CourseTest.DeleteTestObject(course2, Repository);
+                Repository.DeleteDepartment(course1.DepartmentID);
+                Repository.DeleteDepartment(course2.DepartmentID);
+            }
+        }
+
+        [TestMethod]
+        public void AddInstructor_Test_two_courses_to_one()
+        {
+            const int BASE_COURSE_COUNT = 2;
+            const int EXPECTED_COURSE_COUNT = 1;
+
+            var currentPeopleCount = Repository.GetAllInstructors().Count();
+            var course1 = CourseTest.CreateTestCourse(Repository);
+            var course2 = CourseTest.CreateTestCourse(Repository);
+
+            var targetUnderTest = new InstructorDTO();
+            targetUnderTest.FirstName = "Test";
+            targetUnderTest.LastName = "Subject";
+            targetUnderTest.Courses = new List<CourseDTO>();
+            targetUnderTest.Courses.Add(course1);
+            targetUnderTest.Courses.Add(course2);
+
+            try
+            {
+                //Add the courses. Make sure they add correctly.
+                targetUnderTest = Repository.CreateInstructor(targetUnderTest);
+                Assert.IsTrue(Repository.GetAllInstructors().Count() > currentPeopleCount);
+                Assert.AreEqual(BASE_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+
+                //Remove one course.
+                targetUnderTest.Courses.Remove(targetUnderTest.Courses.Where(x => x.CourseID == course1.CourseID).First());
+
+                //Save it. Verify the course count updates.
+                targetUnderTest = Repository.UpdateInstructor(targetUnderTest);
+                Assert.IsTrue(Repository.GetAllInstructors().Count() > currentPeopleCount);
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                InstructorsTest.DeleteTestInstructor(targetUnderTest, Repository);
+                CourseTest.DeleteTestObject(course1, Repository);
+                CourseTest.DeleteTestObject(course2, Repository);
+                Repository.DeleteDepartment(course1.DepartmentID);
+                Repository.DeleteDepartment(course2.DepartmentID);
+            }
+        }
+
+
+        [TestMethod]
+        public void GetInstructorTest_No_Classes()
         {            
             var obj = new InstructorDTO();
             obj.FirstName = "Test";
@@ -47,7 +211,83 @@ namespace School.Tests.Integration.Data
             Assert.IsNotNull(allInstructors);
             Assert.IsTrue(allInstructors.Count() > 0);
 
-            InstructorsTest.DeleteTestObject(obj, Repository);
+            InstructorsTest.DeleteTestInstructor(obj, Repository);
+        }
+
+        [TestMethod]
+        public void GetInstructorTest_One_Class()
+        {            
+            const int EXPECTED_COURSE_COUNT = 1;
+                        
+            var course1 = CourseTest.CreateTestCourse(Repository);
+
+            var targetUnderTest = new InstructorDTO();
+            targetUnderTest.FirstName = "Test";
+            targetUnderTest.LastName = "Subject";
+            targetUnderTest.Courses = new List<CourseDTO>();
+            targetUnderTest.Courses.Add(course1);
+
+            try
+            {
+                //Add the courses. Make sure they add correctly.
+                targetUnderTest = Repository.CreateInstructor(targetUnderTest);                
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+
+                var allData = Repository.GetAllInstructors().Where(x => x.InstructorID == targetUnderTest.InstructorID).First();
+                Assert.IsNotNull(allData);
+                Assert.IsNotNull(allData.Courses);
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, allData.Courses.Count());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                InstructorsTest.DeleteTestInstructor(targetUnderTest, Repository);
+                CourseTest.DeleteTestObject(course1, Repository);
+                Repository.DeleteDepartment(course1.DepartmentID);
+            }
+        }
+
+        [TestMethod]
+        public void GetInstructorTest_two_Classes()
+        {
+            const int EXPECTED_COURSE_COUNT = 2;
+
+            var course1 = CourseTest.CreateTestCourse(Repository);
+            var course2 = CourseTest.CreateTestCourse(Repository);
+
+            var targetUnderTest = new InstructorDTO();
+            targetUnderTest.FirstName = "Test";
+            targetUnderTest.LastName = "Subject";
+            targetUnderTest.Courses = new List<CourseDTO>();
+            targetUnderTest.Courses.Add(course1);
+            targetUnderTest.Courses.Add(course2);
+
+            try
+            {
+                //Add the courses. Make sure they add correctly.
+                targetUnderTest = Repository.CreateInstructor(targetUnderTest);
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, Repository.GetCoursesByInstructor(targetUnderTest.InstructorID).Count());
+
+                var allData = Repository.GetAllInstructors().Where(x => x.InstructorID == targetUnderTest.InstructorID).First();
+                Assert.IsNotNull(allData);
+                Assert.IsNotNull(allData.Courses);
+                Assert.AreEqual(EXPECTED_COURSE_COUNT, allData.Courses.Count());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                InstructorsTest.DeleteTestInstructor(targetUnderTest, Repository);
+                CourseTest.DeleteTestObject(course1, Repository);
+                CourseTest.DeleteTestObject(course2, Repository);
+                Repository.DeleteDepartment(course1.DepartmentID);
+                Repository.DeleteDepartment(course2.DepartmentID);
+            }
         }
 
         [TestMethod]
@@ -61,7 +301,7 @@ namespace School.Tests.Integration.Data
             
             var currentCount = Repository.GetAllInstructors().Count();
 
-            InstructorsTest.DeleteTestObject(obj, Repository);
+            InstructorsTest.DeleteTestInstructor(obj, Repository);
 
             Assert.IsTrue(Repository.GetAllInstructors().Count() < currentCount);
         }
@@ -94,7 +334,7 @@ namespace School.Tests.Integration.Data
             finally
             {
                 //Remove the test data.
-                InstructorsTest.DeleteTestObject(obj, Repository);
+                InstructorsTest.DeleteTestInstructor(obj, Repository);
             }            
         }
 
@@ -129,7 +369,7 @@ namespace School.Tests.Integration.Data
             finally
             {
                 //Remove the test data.
-                InstructorsTest.DeleteTestObject(obj, Repository);
+                InstructorsTest.DeleteTestInstructor(obj, Repository);
             }
         }
 
@@ -163,7 +403,7 @@ namespace School.Tests.Integration.Data
             finally
             {
                 //Remove the test data.
-                InstructorsTest.DeleteTestObject(obj, Repository);
+                InstructorsTest.DeleteTestInstructor(obj, Repository);
             }
         }
 
@@ -195,7 +435,7 @@ namespace School.Tests.Integration.Data
             finally
             {
                 //Remove the test data.
-                InstructorsTest.DeleteTestObject(obj, Repository);
+                InstructorsTest.DeleteTestInstructor(obj, Repository);
             }
         }
 
@@ -235,7 +475,7 @@ namespace School.Tests.Integration.Data
             finally
             {
                 //Remove the test data.
-                InstructorsTest.DeleteTestObject(obj, Repository);
+                InstructorsTest.DeleteTestInstructor(obj, Repository);
             }
         }
 
@@ -267,7 +507,7 @@ namespace School.Tests.Integration.Data
         /// Deletes the test object.
         /// </summary>
         /// <param name="toDelete">The object to delete.</param>
-        public static void DeleteTestObject(InstructorDTO toDelete, ISchoolData Repository)
+        public static void DeleteTestInstructor(InstructorDTO toDelete, ISchoolData Repository)
         {
             Repository.DeleteInstructor(toDelete.InstructorID);            
         }

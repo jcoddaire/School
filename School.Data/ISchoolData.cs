@@ -56,7 +56,7 @@ namespace School.Data
 
         /// <summary>Gets a list of courses that instructors teach.</summary>
         /// <param name="instructorID">The instructor ID that teaches the courses.</param>
-        IEnumerable<CourseInstructorDTO> GetCoursesByInstructor(int instructorID);
+        IEnumerable<CourseDTO> GetCoursesByInstructor(int instructorID);
 
         /// <summary>
         /// Creates the course instructor.

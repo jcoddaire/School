@@ -25,12 +25,7 @@ namespace School.API.Controllers
         [HttpGet]
         public IEnumerable<InstructorDTO> Get()
         {
-            var instructors = Repository.GetAllInstructors().ToList();
-
-            //Add course data to the instructors objects.
-            instructors = AddCourses(instructors);
-
-            return instructors;
+            return Repository.GetAllInstructors().ToList();
         }
 
         /// <summary>
@@ -49,12 +44,7 @@ namespace School.API.Controllers
             var target = Repository.GetInstructor(id);
             if (target != null && target.InstructorID > 0)
             {
-                //TODO: fix this. Data layer maybe.
-                var n = new List<InstructorDTO>();
-                n.Add(target);
-                n = AddCourses(n);
-
-                return n.FirstOrDefault();
+                return target;
             }
 
             //cannot find it, throw a 404.
@@ -64,61 +54,64 @@ namespace School.API.Controllers
         /// <summary>
         /// Creates a new instructor.
         /// </summary>
-        /// <param name="person">The instructor.</param>
+        /// <param name="instructor">The instructor.</param>
         [HttpPost]
-        public ActionResult<InstructorDTO> Post(InstructorDTO person)
+        public ActionResult<InstructorDTO> Post(InstructorDTO instructor)
         {
-            if (person == null)
+            if (instructor == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            person = Repository.CreateInstructor(person);
+            instructor = Repository.CreateInstructor(instructor);
 
-            return person;
+            return instructor;
         }
 
         /// <summary>
         /// Updates the instructor.
         /// </summary>
-        /// <param name="person">The instructor.</param>
+        /// <param name="instructor">The instructor.</param>
         /// <returns></returns>
         [HttpPut]
-        public ActionResult<InstructorDTO> Put(InstructorDTO person)
+        public ActionResult<InstructorDTO> Put(InstructorDTO instructor)
         {
-            if (person == null)
+            if (instructor == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            if (person.InstructorID <= 0)
+            if (instructor.InstructorID <= 0)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetInstructor(person.InstructorID);
-            if (foundPerson == null)
+            var targetInstructor = Repository.GetInstructor(instructor.InstructorID);
+            if (targetInstructor == null)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            if (foundPerson.FirstName.Equals(person.FirstName)
-                && foundPerson.LastName.Equals(person.LastName)
-                && foundPerson.HireDate.Equals(person.HireDate)
-                && foundPerson.Terminated.Equals(person.Terminated))
+            if (targetInstructor.FirstName.Equals(instructor.FirstName)
+                && targetInstructor.LastName.Equals(instructor.LastName)
+                && targetInstructor.HireDate.Equals(instructor.HireDate)
+                && targetInstructor.Terminated.Equals(instructor.Terminated))
             {
-                //There are no changes to the object.
-                //return 204 no change.
-                return person;
+                if(instructor.Courses == null && targetInstructor.Courses == null)
+                {
+                    //There are no changes to the object.
+                    //return 204 no change.
+                    return instructor;
+                }
             }
 
-            person = Repository.UpdateInstructor(person);
+            instructor = Repository.UpdateInstructor(instructor);
 
-            return person;
+            return instructor;
         }
 
         /// <summary>
@@ -151,38 +144,6 @@ namespace School.API.Controllers
 
             //something went wrong. TODO: find a better way to handle this.            
             return StatusCode(500, "This should never happen.");
-        }
-
-        /// <summary>Adds courses to the list of instructors.</summary>
-        /// <param name="instructors">The instructors.</param>
-        /// <returns></returns>
-        private List<InstructorDTO> AddCourses(List<InstructorDTO> instructors)
-        {
-            var courses = Repository.GetAllCourses().ToList();
-            if (courses == null || courses.Count() <= 0)
-            {
-                return instructors;
-            }
-
-            foreach (var i in instructors)
-            {
-                i.Courses = new List<CourseDTO>();
-
-                var instructorCourses = Repository.GetCoursesByInstructor(i.InstructorID);
-                if (instructorCourses != null && instructorCourses.Count() > 0)
-                {
-                    foreach (var ic in instructorCourses)
-                    {
-                        var courseData = courses.Where(x => x.CourseID == ic.CourseID).FirstOrDefault();
-                        if (courseData != null)
-                        {
-                            i.Courses.Add(courseData);
-                        }
-                    }
-                }
-            }
-
-            return instructors;
-        }
+        }        
     }
 }
