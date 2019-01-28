@@ -96,7 +96,6 @@ namespace School.Data
             Database.Courses.Attach(changedObj);
 
             var entry = Database.Entry(changedObj);
-            entry.Property(e => e.CourseId).IsModified = true;
             entry.Property(e => e.Name).IsModified = true;
             entry.Property(e => e.Credits).IsModified = true;
             entry.Property(e => e.DepartmentId).IsModified = true;
@@ -144,12 +143,7 @@ namespace School.Data
 
             return course;
         }
-
-        public CourseInstructorDTO UpdateCourseInstructor(CourseInstructorDTO course)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public int DeleteCourseInstructor(CourseInstructorDTO course)
         {
             var target = Database.CourseInstructors.Where(x => x.CourseId == course.CourseID && x.InstructorId == course.InstructorID).FirstOrDefault();
@@ -218,7 +212,27 @@ namespace School.Data
 
         public DepartmentDTO UpdateDepartment(DepartmentDTO department)
         {
-            throw new NotImplementedException();
+            var changedObj = Database.Departments.Where(p => p.DepartmentId == department.DepartmentID).FirstOrDefault();
+            if (changedObj == null || changedObj.DepartmentId != department.DepartmentID)
+            {
+                throw new KeyNotFoundException("Could not find a matching department in the system.");
+            }
+
+            changedObj.DepartmentId = department.DepartmentID;
+            changedObj.Name = department.Name;
+            changedObj.Budget = department.Budget;
+            changedObj.CreatedDate = department.CreatedDate;
+
+            Database.Departments.Attach(changedObj);
+
+            var entry = Database.Entry(changedObj);
+            entry.Property(e => e.Name).IsModified = true;
+            entry.Property(e => e.Budget).IsModified = true;
+            entry.Property(e => e.CreatedDate).IsModified = true;
+
+            Database.SaveChanges();
+
+            return department;
         }
 
         public int DeleteDepartment(int departmentID)
@@ -261,6 +275,7 @@ namespace School.Data
 
             foreach (var i in s)
             {
+                i.Courses = new List<CourseDTO>();
                 var currentCourses = allCourseInstructors.Where(c => c.InstructorId == i.InstructorID).AsEnumerable();
                 if(currentCourses != null && currentCourses.Count() > 0)
                 {
@@ -327,7 +342,29 @@ namespace School.Data
 
         public InstructorDTO UpdateInstructor(InstructorDTO instructor)
         {
-            throw new NotImplementedException();
+            var changedObj = Database.Instructors.Where(p => p.InstructorId == instructor.InstructorID).FirstOrDefault();
+            if (changedObj == null || changedObj.InstructorId != instructor.InstructorID)
+            {
+                throw new KeyNotFoundException("Could not find a matching instructor in the system.");
+            }
+
+            changedObj.InstructorId = instructor.InstructorID;
+            changedObj.FirstName = instructor.FirstName;
+            changedObj.LastName = instructor.LastName;
+            changedObj.HireDate = instructor.HireDate;
+            changedObj.Terminated = instructor.Terminated;
+
+            Database.Instructors.Attach(changedObj);
+
+            var entry = Database.Entry(changedObj);
+            entry.Property(e => e.FirstName).IsModified = true;
+            entry.Property(e => e.LastName).IsModified = true;
+            entry.Property(e => e.HireDate).IsModified = true;
+            entry.Property(e => e.Terminated).IsModified = true;
+
+            Database.SaveChanges();
+
+            return instructor;
         }
 
         public int DeleteInstructor(int instructorID)
@@ -397,7 +434,27 @@ namespace School.Data
 
         public StudentDTO UpdateStudent(StudentDTO student)
         {
-            throw new NotImplementedException();
+            var changedObj = Database.Students.Where(p => p.StudentId == student.StudentID).FirstOrDefault();
+            if (changedObj == null || changedObj.StudentId != student.StudentID)
+            {
+                throw new KeyNotFoundException("Could not find a matching student in the system.");
+            }
+
+            changedObj.StudentId = student.StudentID;
+            changedObj.FirstName = student.FirstName;
+            changedObj.LastName = student.LastName;
+            changedObj.EnrollmentDate = student.EnrollmentDate;
+
+            Database.Students.Attach(changedObj);
+
+            var entry = Database.Entry(changedObj);
+            entry.Property(e => e.FirstName).IsModified = true;
+            entry.Property(e => e.LastName).IsModified = true;
+            entry.Property(e => e.EnrollmentDate).IsModified = true;
+
+            Database.SaveChanges();
+
+            return student;
         }
 
         public int DeleteStudent(int StudentID)
@@ -475,11 +532,6 @@ namespace School.Data
             Database.SaveChanges();
 
             return StudentCourse;
-        }
-
-        public StudentCourseDTO UpdateStudentCourse(StudentCourseDTO StudentCourse)
-        {
-            throw new NotImplementedException();
         }
 
         public int DeleteStudentCourse(int studentID, int cousrseID, int enrolledYear, string enrolledSemester)

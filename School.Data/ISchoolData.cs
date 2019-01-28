@@ -60,14 +60,7 @@ namespace School.Data
         /// <param name="course">The course.</param>
         /// <returns></returns>
         CourseInstructorDTO CreateCourseInstructor(CourseInstructorDTO course);
-
-        /// <summary>
-        /// Updates the course instructor.
-        /// </summary>
-        /// <param name="course">The course.</param>
-        /// <returns></returns>
-        CourseInstructorDTO UpdateCourseInstructor(CourseInstructorDTO course);
-
+        
         /// <summary>
         /// Deletes the course instructor.
         /// </summary>
@@ -219,14 +212,7 @@ namespace School.Data
         /// <param name="StudentCourse">The StudentCourse.</param>
         /// <returns></returns>
         StudentCourseDTO CreateStudentCourse(StudentCourseDTO StudentCourse);
-
-        /// <summary>
-        /// Updates the StudentCourse.
-        /// </summary>
-        /// <param name="StudentCourse">The StudentCourse.</param>
-        /// <returns></returns>
-        StudentCourseDTO UpdateStudentCourse(StudentCourseDTO StudentCourse);
-
+        
         /// <summary>
         /// Deletes the StudentCourse.
         /// </summary>
