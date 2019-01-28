@@ -54,19 +54,23 @@ namespace School.Data
         /// <returns></returns>
         IEnumerable<CourseInstructorDTO> GetAllCourseInstructors();
 
+        /// <summary>Gets a list of courses that instructors teach.</summary>
+        /// <param name="instructorID">The instructor ID that teaches the courses.</param>
+        IEnumerable<CourseInstructorDTO> GetCoursesByInstructor(int instructorID);
+
         /// <summary>
         /// Creates the course instructor.
         /// </summary>
         /// <param name="course">The course.</param>
         /// <returns></returns>
-        CourseInstructorDTO CreateCourseInstructor(CourseInstructorDTO course);
+        CourseInstructorDTO AssignCourseToInstructor(CourseInstructorDTO course);
         
         /// <summary>
         /// Deletes the course instructor.
         /// </summary>
         /// <param name="courseID">The course identifier.</param>
         /// <returns></returns>
-        int DeleteCourseInstructor(CourseInstructorDTO course);
+        int RemoveCourseFromInstructor(CourseInstructorDTO course);
 
         #endregion
 

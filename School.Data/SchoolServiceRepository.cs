@@ -130,7 +130,30 @@ namespace School.Data
             return s;
         }
 
-        public CourseInstructorDTO CreateCourseInstructor(CourseInstructorDTO course)
+
+        /// <summary>Gets a list of courses that instructors teach.</summary>
+        /// <param name="instructorID">The instructor ID that teaches the courses.</param>
+        public IEnumerable<CourseInstructorDTO> GetCoursesByInstructor(int instructorID)
+        {
+            if(instructorID <= 0)
+            {
+                return null;
+            }
+
+            var s = Database.CourseInstructors.Where(x => x.InstructorId == instructorID).Select(
+                a => new CourseInstructorDTO()
+                {
+                    CourseID = a.CourseId,
+                    InstructorID = a.InstructorId
+
+                }).AsEnumerable<CourseInstructorDTO>();
+
+            return s;
+        }
+
+
+
+        public CourseInstructorDTO AssignCourseToInstructor(CourseInstructorDTO course)
         {
             var newObj = new CourseInstructors
             {
@@ -144,7 +167,7 @@ namespace School.Data
             return course;
         }
         
-        public int DeleteCourseInstructor(CourseInstructorDTO course)
+        public int RemoveCourseFromInstructor(CourseInstructorDTO course)
         {
             var target = Database.CourseInstructors.Where(x => x.CourseId == course.CourseID && x.InstructorId == course.InstructorID).FirstOrDefault();
 
