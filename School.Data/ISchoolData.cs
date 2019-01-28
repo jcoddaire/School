@@ -47,30 +47,11 @@ namespace School.Data
 
         #endregion
 
-        #region Course Instructor Methods
-        /// <summary>
-        /// Gets all course instructors.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<CourseInstructorDTO> GetAllCourseInstructors();
+        #region Course Instructor Methods        
 
         /// <summary>Gets a list of courses that instructors teach.</summary>
         /// <param name="instructorID">The instructor ID that teaches the courses.</param>
-        IEnumerable<CourseDTO> GetCoursesByInstructor(int instructorID);
-
-        /// <summary>
-        /// Creates the course instructor.
-        /// </summary>
-        /// <param name="course">The course.</param>
-        /// <returns></returns>
-        CourseInstructorDTO AssignCourseToInstructor(CourseInstructorDTO course);
-        
-        /// <summary>
-        /// Deletes the course instructor.
-        /// </summary>
-        /// <param name="courseID">The course identifier.</param>
-        /// <returns></returns>
-        int RemoveCourseFromInstructor(CourseInstructorDTO course);
+        IEnumerable<CourseDTO> GetCoursesByInstructor(int instructorID);        
 
         #endregion
 

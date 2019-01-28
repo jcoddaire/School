@@ -116,21 +116,7 @@ namespace School.Data
             }
             return -1;
         }
-
-        public IEnumerable<CourseInstructorDTO> GetAllCourseInstructors()
-        {
-            var s = Database.CourseInstructors.Select(
-                a => new CourseInstructorDTO()
-                {
-                    CourseID = a.CourseId,
-                    InstructorID = a.InstructorId
-
-                }).AsEnumerable<CourseInstructorDTO>();
-
-            return s;
-        }
-
-
+        
         /// <summary>Gets a list of courses that instructors teach.</summary>
         /// <param name="instructorID">The instructor ID that teaches the courses.</param>
         public IEnumerable<CourseDTO> GetCoursesByInstructor(int instructorID)
@@ -171,34 +157,7 @@ namespace School.Data
 
             return result;
         }
-
-
-        public CourseInstructorDTO AssignCourseToInstructor(CourseInstructorDTO course)
-        {
-            var newObj = new CourseInstructors
-            {
-                CourseId = course.CourseID,
-                InstructorId = course.InstructorID
-            };
-
-            Database.CourseInstructors.Add(newObj);
-            Database.SaveChanges();                       
-
-            return course;
-        }
         
-        public int RemoveCourseFromInstructor(CourseInstructorDTO course)
-        {
-            var target = Database.CourseInstructors.Where(x => x.CourseId == course.CourseID && x.InstructorId == course.InstructorID).FirstOrDefault();
-
-            if (target != null && target.CourseId == course.CourseID && target.InstructorId == course.InstructorID)
-            {
-                Database.CourseInstructors.Remove(target);
-                return Database.SaveChanges();
-            }
-            return -1;
-        }
-
         public IEnumerable<DepartmentDTO> GetAllDepartments()
         {
             var s = Database.Departments.Select(
@@ -417,23 +376,10 @@ namespace School.Data
                 }
             }
 
-            //All new courses should be in the CoursesToAdd object. Save just those.
-            var doSave = false;
-            foreach(var i in coursesToAdd)
+            //All new courses should be in the coursesToAdd object. Save just those.            
+            foreach (var i in coursesToAdd)
             {
-                var courseInstructor = new CourseInstructors()
-                {
-                    CourseId = i.CourseID,
-                    InstructorId = instructor.InstructorID
-                };
-
-                Database.CourseInstructors.Add(courseInstructor);
-                doSave = true;
-            }
-
-            if (doSave)
-            {
-                Database.SaveChanges();
+                AddInstructorCourse(instructor.InstructorID, i.CourseID);
             }
 
             instructor.Courses = GetCoursesByInstructor(instructor.InstructorID).ToList();
@@ -548,8 +494,7 @@ namespace School.Data
                 var instructorCourses = GetCoursesByInstructor(instructorID);
                 foreach(var ii in instructorCourses)
                 {
-                    var removalCantidate = Database.CourseInstructors.Where(x => x.CourseId == ii.CourseID && x.InstructorId == instructorID).First();
-                    Database.CourseInstructors.Remove(removalCantidate);
+                    DeleteInstructorCourse(instructorID, ii.CourseID);
                 }
 
                 Database.Instructors.Remove(target);
