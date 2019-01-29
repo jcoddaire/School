@@ -174,39 +174,5 @@ namespace School.Data
         /// </returns>
         int DeleteStudent(int StudentID);
         #endregion
-
-        #region StudentCourses Methods
-        /// <summary>
-        /// Gets all StudentCourses.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<StudentCourseDTO> GetAllStudentCourses();
-
-        /// <summary>
-        /// Gets all courses associated with the given student.
-        /// </summary>
-        /// <param name="studentID">The Student ID.</param>
-        /// <returns>
-        /// A StudentCourse DTO object. If no StudentCourse was found, returns null.
-        /// </returns>
-        IEnumerable<StudentCourseDTO> GetStudentCourse(int studentID);
-
-        /// <summary>
-        /// Creates the StudentCourse.
-        /// </summary>
-        /// <param name="StudentCourse">The StudentCourse.</param>
-        /// <returns></returns>
-        StudentCourseDTO CreateStudentCourse(StudentCourseDTO StudentCourse);
-        
-        /// <summary>
-        /// Deletes the StudentCourse.
-        /// </summary>
-        /// <param name="StudentCourseID">The StudentCourse identifier.</param>
-        /// <returns>
-        /// The number of rows affected.
-        /// If something failed, returns -1.
-        /// </returns>
-        int DeleteStudentCourse(int studentID, int cousrseID, int enrolledYear, string enrolledSemester);
-        #endregion
     }
 }

@@ -28,6 +28,8 @@ namespace School.Data
             _Database = db;
         }
 
+        #region Courses
+
         public IEnumerable<CourseDTO> GetAllCourses()
         {
             var s = Database.Courses.Select(
@@ -116,7 +118,9 @@ namespace School.Data
             }
             return -1;
         }
-        
+
+        #endregion
+
         /// <summary>Gets a list of courses that instructors teach.</summary>
         /// <param name="instructorID">The instructor ID that teaches the courses.</param>
         public IEnumerable<CourseDTO> GetCoursesByInstructor(int instructorID)
@@ -157,7 +161,9 @@ namespace School.Data
 
             return result;
         }
-        
+
+        #region Departments
+
         public IEnumerable<DepartmentDTO> GetAllDepartments()
         {
             var s = Database.Departments.Select(
@@ -248,6 +254,10 @@ namespace School.Data
             }
             return -1;
         }
+
+        #endregion
+
+        #region Instructors 
 
         public IEnumerable<InstructorDTO> GetAllInstructors()
         {
@@ -503,26 +513,65 @@ namespace School.Data
             return -1;
         }
 
+        #endregion
+
+        #region Students
         public IEnumerable<StudentDTO> GetAllStudents()
         {
-            var s = Database.Students.Select(
+            // TODO: UPDATE FOR BETTER PERFORMANCE.
+            // Getting all students, and all classes, past and present, is probably not a good idea.
+            // Introduce paging?
+
+            var result = Database.Students.Select(
                 a => new StudentDTO()
                 {
                     StudentID = a.StudentId,
                     FirstName = a.FirstName,
                     LastName = a.LastName,
-                    EnrollmentDate = a.EnrollmentDate
+                    EnrollmentDate = a.EnrollmentDate,
+                    Courses = new List<StudentCourseDTO>()
 
-                }).AsEnumerable<StudentDTO>();
+                }).ToList<StudentDTO>();
 
-            return s;
+            //get the student course assignments.
+            var STUDENT_COURSES = GetAllStudentCourses();
+            if(STUDENT_COURSES == null || STUDENT_COURSES.Count <= 0)
+            {
+                return result;
+            }
+
+            var ALL_COURSES = GetAllCourses().ToList();            
+
+            foreach (var student in result)
+            {
+                student.Courses = new List<StudentCourseDTO>();
+
+                var sc = STUDENT_COURSES.Where(x => x.StudentID == student.StudentID).ToList();
+                student.Courses.AddRange(sc);
+
+                //Add the course data as well.
+                if (ALL_COURSES != null && ALL_COURSES.Count > 0)
+                {
+                    for (int ii = 0; ii < student.Courses.Count; ii++)
+                    {
+                        var currentCourse = ALL_COURSES.Where(x => x.CourseID == student.Courses[ii].CourseID).FirstOrDefault();
+                        if (currentCourse != null)
+                        {
+                            student.Courses[ii].Course = currentCourse;
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         public StudentDTO GetStudent(int StudentID)
         {
+            var result = new StudentDTO();
             if (StudentID <= 0)
             {
-                return null;
+                return result;
             }
 
             var target = Database.Students.Where(c => c.StudentId == StudentID)
@@ -531,11 +580,28 @@ namespace School.Data
                     StudentID = a.StudentId,
                     FirstName = a.FirstName,
                     LastName = a.LastName,
-                    EnrollmentDate = a.EnrollmentDate
+                    EnrollmentDate = a.EnrollmentDate,
+                    Courses = new List<StudentCourseDTO>()
 
                 }).FirstOrDefault();
 
-            return target;
+            if(target == null)
+            {
+                return result;
+            }
+
+            result = target;
+
+            //get the student course assignments.
+            var classes = GetClasses(result.StudentID).ToList();
+            if (classes == null || classes.Count <= 0)
+            {
+                return result;
+            }
+
+            result.Courses = classes;
+
+            return result;
         }
 
         public StudentDTO CreateStudent(StudentDTO Student)
@@ -583,24 +649,24 @@ namespace School.Data
 
         public int DeleteStudent(int StudentID)
         {
-            var result = 0;
+            //var result = 0;
 
             var target = Database.Students.Where(x => x.StudentId == StudentID).FirstOrDefault();
 
             if (target != null && target.StudentId == StudentID)
             {
                 //remove all student courses objects.
-                var courses = GetStudentCourse(StudentID);
+                var courses = GetClasses(StudentID);
                 if(courses != null && courses.Count() > 0)
                 {
-                    foreach(var c in courses)
-                    {
-                        result = DeleteStudentCourse(c.StudentID, c.CourseID, c.EnrolledYear, c.EnrolledSemester);
-                        if(result <= 0)
-                        {
-                            return -1;
-                        }
-                    }
+                    //foreach(var c in courses)
+                    //{
+                    //    result = DeleteStudentCourse(c.StudentID, c.CourseID, c.EnrolledYear, c.EnrolledSemester);
+                    //    if(result <= 0)
+                    //    {
+                    //        return -1;
+                    //    }
+                    //}
                     Database.SaveChanges();
                 }
 
@@ -611,10 +677,11 @@ namespace School.Data
             return -1;
         }
 
-        public IEnumerable<StudentCourseDTO> GetAllStudentCourses()
-        {
+        #endregion
 
-            var s = Database.StudentCourses.Select(
+        private List<StudentCourseDTO> GetAllStudentCourses()
+        {
+            var result = Database.StudentCourses.Select(
                 a => new StudentCourseDTO()
                 {
                     StudentID = a.StudentId,
@@ -626,18 +693,58 @@ namespace School.Data
                     Dropped = a.Dropped,
                     DroppedTime = a.DroppedTime
 
-                }).AsEnumerable<StudentCourseDTO>();
+                }).ToList<StudentCourseDTO>();
 
-            return s;
+            return result;
         }
 
-        public IEnumerable<StudentCourseDTO> GetStudentCourse(int studentID)
+        private IEnumerable<StudentCourseDTO> GetClasses(int studentID)
         {
-            var target = GetAllStudentCourses().Where(x => x.StudentID == studentID).AsEnumerable();
-            return target;
+            var result = new List<StudentCourseDTO>();
+
+            if (studentID <= 0)
+            {
+                return result;
+            }           
+
+            var courses = Database.StudentCourses.Where(x => x.StudentId == studentID).ToList();
+            if (courses != null && courses.Count > 0)
+            {                
+                foreach(var c in courses)
+                {
+                    var newStudentCourse = new StudentCourseDTO();
+                    newStudentCourse.StudentID = c.StudentId;
+                    newStudentCourse.CourseID = c.CourseId;
+                    newStudentCourse.Grade = c.Grade;
+                    newStudentCourse.EnrolledYear = c.EnrolledYear;
+                    newStudentCourse.EnrolledSemester = c.EnrolledSemester;
+                    newStudentCourse.Completed = c.Completed;
+                    newStudentCourse.Dropped = c.Dropped;
+                    newStudentCourse.DroppedTime = c.DroppedTime;
+
+                    //add the course data.
+                    var targetCourse = Database.Courses.Where(x => x.CourseId == c.CourseId).FirstOrDefault();
+                    if(targetCourse != null)
+                    {
+                        var courseDetail = new CourseDTO()
+                        {
+                            CourseID = targetCourse.CourseId,
+                            Name = targetCourse.Name,
+                            Credits = targetCourse.Credits,
+                            DepartmentID = targetCourse.DepartmentId
+                        };
+
+                        newStudentCourse.Course = courseDetail;
+                    }
+
+                    result.Add(newStudentCourse);
+                }
+            }
+
+            return result;
         }
 
-        public StudentCourseDTO CreateStudentCourse(StudentCourseDTO StudentCourse)
+        private StudentCourseDTO CreateStudentCourse(StudentCourseDTO StudentCourse)
         {
             var newObj = new StudentCourses
             {
@@ -658,7 +765,7 @@ namespace School.Data
             return StudentCourse;
         }
 
-        public int DeleteStudentCourse(int studentID, int cousrseID, int enrolledYear, string enrolledSemester)
+        private int DeleteStudentCourse(int studentID, int cousrseID, int enrolledYear, string enrolledSemester)
         {
             var target = Database.StudentCourses.Where(x => x.CourseId == cousrseID && x.StudentId == studentID && x.EnrolledYear == enrolledYear && x.EnrolledSemester == enrolledSemester).FirstOrDefault();
 

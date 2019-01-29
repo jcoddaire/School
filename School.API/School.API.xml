@@ -112,13 +112,13 @@
         </member>
         <member name="M:School.API.Controllers.StudentController.Get">
             <summary>
-            Gets all people in the system.
+            Gets all students in the system.
             </summary>
             <returns></returns>
         </member>
         <member name="M:School.API.Controllers.StudentController.Get(System.Int32)">
             <summary>
-            Gets a given person.
+            Gets a specific student.
             </summary>
             <param name="id">The identifier.</param>
             <returns></returns>
@@ -129,25 +129,8 @@
             </summary>
             <param name="person">The person.</param>
             <returns></returns>
-            <exception cref="!:HttpResponseException"></exception>
         </member>
-        <member name="M:School.API.Controllers.StudentController.Put(School.DTOs.StudentDTO)">
-            <summary>
-            Updates the specified person.
-            </summary>
-            <param name="person">The person.</param>
-            <returns></returns>
-            <exception cref="!:HttpResponseException">
-            </exception>
-        </member>
-        <member name="M:School.API.Controllers.StudentController.Delete(System.Int32)">
-            <summary>
-            Deletes the specified person.
-            </summary>
-            <param name="id">The identifier.</param>
-            <returns></returns>
-            <exception cref="!:HttpResponseException">
-            </exception>
-        </member>
+        <!-- Badly formed XML comment ignored for member "M:School.API.Controllers.StudentController.Put(School.DTOs.StudentDTO)" -->
+        <!-- Badly formed XML comment ignored for member "M:School.API.Controllers.StudentController.Delete(System.Int32)" -->
     </members>
 </doc>

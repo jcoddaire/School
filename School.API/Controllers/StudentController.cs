@@ -19,7 +19,7 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Gets all people in the system.
+        /// Gets all students in the system.
         /// </summary>
         /// <returns></returns>
         [HttpGet]
@@ -29,7 +29,7 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Gets a given person.
+        /// Gets a specific student.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
@@ -56,7 +56,6 @@ namespace School.API.Controllers
         /// </summary>
         /// <param name="person">The person.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException"></exception>
         [HttpPost]
         public ActionResult<StudentDTO> Post(StudentDTO person)
         {
@@ -72,11 +71,10 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Updates the specified person.
+        /// Updates the specified student.
         /// </summary>
         /// <param name="person">The person.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException">
         /// </exception>
         [HttpPut]
         public ActionResult<StudentDTO> Put(StudentDTO person)
@@ -116,11 +114,10 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Deletes the specified person.
+        /// Deletes the specified student.
         /// </summary>
         /// <param name="id">The identifier.</param>
         /// <returns></returns>
-        /// <exception cref="HttpResponseException">
         /// </exception>
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)

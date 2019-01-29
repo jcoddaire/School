@@ -7,6 +7,7 @@ namespace School.DTOs
     {
         public int StudentID { get; set; }        
         public int CourseID { get; set; }
+        public CourseDTO Course { get; set; }
         public decimal Grade { get; set; }
         public int EnrolledYear { get; set; }
         public string EnrolledSemester { get; set; }
