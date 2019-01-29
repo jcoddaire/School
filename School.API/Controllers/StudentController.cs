@@ -52,73 +52,59 @@ namespace School.API.Controllers
         }
 
         /// <summary>
-        /// Creates a new person.
+        /// Creates a new student.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="student">The student.</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult<StudentDTO> Post(StudentDTO person)
+        public ActionResult<StudentDTO> Post(StudentDTO student)
         {
-            if (person == null)
+            if (student == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            person = Repository.CreateStudent(person);
-
-            return person;
+            return Repository.CreateStudent(student);
         }
 
         /// <summary>
-        /// Updates the specified student.
+        /// Updates the student.
         /// </summary>
-        /// <param name="person">The person.</param>
+        /// <param name="student">The student.</param>
         /// <returns></returns>
-        /// </exception>
         [HttpPut]
-        public ActionResult<StudentDTO> Put(StudentDTO person)
+        public ActionResult<StudentDTO> Put(StudentDTO student)
         {
-            if (person == null)
+            if (student == null)
             {
                 //return 400 bad reqeust.
                 return BadRequest();
             }
 
-            if (person.StudentID <= 0)
+            if (student.StudentID <= 0)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            var foundPerson = Repository.GetStudent(person.StudentID);
-            if (foundPerson == null)
+            var foundPerson = Repository.GetStudent(student.StudentID);
+            if (foundPerson == null || foundPerson.StudentID <= 0)
             {
                 //return 404 not found.
                 return NotFound();
             }
 
-            if (foundPerson.FirstName.Equals(person.FirstName)
-                && foundPerson.LastName.Equals(person.LastName)
-                && foundPerson.EnrollmentDate.Equals(person.EnrollmentDate)
-                && foundPerson.EnrollmentDate.Equals(person.EnrollmentDate))
-            {
-                //There are no changes to the object.
-                //return 204 no change.
-                return person;
-            }
+            student = Repository.UpdateStudent(student);
 
-            person = Repository.UpdateStudent(person);
-
-            return person;
+            return student;
         }
 
         /// <summary>
-        /// Deletes the specified student.
+        /// Removes the student from the system.
         /// </summary>
-        /// <param name="id">The identifier.</param>
+        /// <param name="id">The student ID.</param>
         /// <returns></returns>
-        /// </exception>
         [HttpDelete("{id}")]
         public ActionResult Delete(int id)
         {
@@ -129,7 +115,7 @@ namespace School.API.Controllers
             }
 
             var foundPerson = Repository.GetStudent(id);
-            if (foundPerson == null)
+            if (foundPerson == null || foundPerson.StudentID <= 0)
             {
                 //return 404 not found.
                 return NotFound();

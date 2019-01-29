@@ -619,6 +619,19 @@ namespace School.Data
 
             Student.StudentID = newObj.StudentId;
 
+            if(Student.Courses != null && Student.Courses.Count > 0)
+            {
+                foreach(var c in Student.Courses)
+                {
+                    if(c.StudentID <= 0)
+                    {
+                        c.StudentID = Student.StudentID;
+                    }
+
+                    CreateStudentCourse(c);
+                }
+            }
+
             return Student;
         }
 
@@ -630,6 +643,7 @@ namespace School.Data
                 throw new KeyNotFoundException("Could not find a matching student in the system.");
             }
 
+            //update all student detail data.
             changedObj.StudentId = student.StudentID;
             changedObj.FirstName = student.FirstName;
             changedObj.LastName = student.LastName;
@@ -644,33 +658,50 @@ namespace School.Data
 
             Database.SaveChanges();
 
+            //update all course data.
+
+            //Delete all existing courses.
+            var courses = GetClasses(student.StudentID).ToList();
+            if(courses != null && courses.Count >= 0)
+            {
+                foreach(var c in courses)
+                {
+                    DeleteStudentCourse(c.StudentID, c.CourseID, c.EnrolledYear, c.EnrolledSemester);
+                }
+            }
+
+            //Add current courses.
+            if (student.Courses != null && student.Courses.Count >= 0)
+            {
+                foreach (var c in student.Courses)
+                {
+                    CreateStudentCourse(c);
+                }
+            }
+
             return student;
         }
 
         public int DeleteStudent(int StudentID)
         {
-            //var result = 0;
+            //remove all student courses objects.
+            var courses = GetClasses(StudentID).ToList();
+            if (courses != null && courses.Count > 0)
+            {
+                foreach (var c in courses)
+                {
+                    var result = DeleteStudentCourse(c.StudentID, c.CourseID, c.EnrolledYear, c.EnrolledSemester);
+                    if (result <= 0)
+                    {
+                        return -1;
+                    }
+                }
+            }
 
+            //remove the student object.
             var target = Database.Students.Where(x => x.StudentId == StudentID).FirstOrDefault();
-
             if (target != null && target.StudentId == StudentID)
             {
-                //remove all student courses objects.
-                var courses = GetClasses(StudentID);
-                if(courses != null && courses.Count() > 0)
-                {
-                    //foreach(var c in courses)
-                    //{
-                    //    result = DeleteStudentCourse(c.StudentID, c.CourseID, c.EnrolledYear, c.EnrolledSemester);
-                    //    if(result <= 0)
-                    //    {
-                    //        return -1;
-                    //    }
-                    //}
-                    Database.SaveChanges();
-                }
-
-
                 Database.Students.Remove(target);
                 return Database.SaveChanges();
             }

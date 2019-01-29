@@ -125,12 +125,24 @@
         </member>
         <member name="M:School.API.Controllers.StudentController.Post(School.DTOs.StudentDTO)">
             <summary>
-            Creates a new person.
+            Creates a new student.
             </summary>
-            <param name="person">The person.</param>
+            <param name="student">The student.</param>
             <returns></returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "M:School.API.Controllers.StudentController.Put(School.DTOs.StudentDTO)" -->
-        <!-- Badly formed XML comment ignored for member "M:School.API.Controllers.StudentController.Delete(System.Int32)" -->
+        <member name="M:School.API.Controllers.StudentController.Put(School.DTOs.StudentDTO)">
+            <summary>
+            Updates the student.
+            </summary>
+            <param name="student">The student.</param>
+            <returns></returns>
+        </member>
+        <member name="M:School.API.Controllers.StudentController.Delete(System.Int32)">
+            <summary>
+            Removes the student from the system.
+            </summary>
+            <param name="id">The student ID.</param>
+            <returns></returns>
+        </member>
     </members>
 </doc>
