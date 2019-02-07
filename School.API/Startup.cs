@@ -73,14 +73,16 @@ namespace School.API
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "School Service V1");
             });
 
-            //TODO: figure out why this code does not work.
+            //TODO: figure out why this code does not work. Update the CORS policy to be correct.
             //app.UseCors(
             //    options => options.WithOrigins("https://localhost:4200")
             //);
-
             app.UseCors(builder => builder
-                        .AllowAnyOrigin());
-
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials());
+            
             app.UseMvc();
         }
     }
